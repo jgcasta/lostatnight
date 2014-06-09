@@ -96,7 +96,7 @@
         <!-- -------------- Social buttons ------------- -->
         <div>
           <div id="Twitter-share-section" style='float: left'>
-                    <a href="https://twitter.com/share" class="twitter-share-button" data-text="Check this amazing picture and help us to georreference it" data-size="large" data-hashtags="NightCitiesISS">Tweet</a>
+                    <a href="https://twitter.com/share" class="twitter-share-button" data-text="Check this amazing picture and help us to georreference it" data-size="large" data-hashtags="LostAtNight">Tweet</a>
                 </div>
                 <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
           </div> <!-- end twitter -->
@@ -113,7 +113,7 @@
             })();
           </script>
           <div style="float:left"> 
-          <div id="fb-like" class="fb-like"  data-href="http://www.cowdcrafting.org/app/nightcitiesiss" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
+          <div id="fb-like" class="fb-like"  data-href="http://www.cowdcrafting.org/app/LostAtNight" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
             <div id="fb-root"></div>
           </div>
           <script>(function(d, s, id) {
@@ -176,7 +176,7 @@
  
 <script>
 function loadUserProgress() {
-    pybossa.userProgress('nightcitiesiss').done(function(data){
+    pybossa.userProgress('LostAtNight').done(function(data){
         var pct = Math.round((data.done*100)/data.total);
         $("#progress").css("width", pct.toString() +"%");
         $("#progress").attr("title", pct.toString() + "% completed!");
@@ -607,5 +607,5 @@ function getIimDim(urlimage){
   return dim;
 }
 
-pybossa.run('nightcitiesiss');
+pybossa.run('lostAtNight');
 </script>
