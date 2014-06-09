@@ -1,0 +1,65 @@
+<div class="row">
+    <div class="span12">
+        <div id="modal" class="modal hide fade">
+            <div class="modal-header">
+                <h3>Locate Cites ISS Tutorial</h3>
+            </div>
+            <div id="0" class="modal-body" style="display:none">
+                <p><strong>Hi!</strong> Thanks for collaborating in analyzing light pollution locating cities nigth pictures taken from ISS
+                <img width='575' heigh='400' src="http://eol.jsc.nasa.gov/sseop/images/ESC/small/ISS030/ISS030-E-67805.JPG" class="img-polaroid"/>
+               </p> 
+            </div>
+            <div id="1" class="modal-body" style="display:none">
+                <p>The application is really simple, you only need to know about a city and help us to identify it. It loads a photo from <a href="http://www.nasa.gov/mission_pages/station/main/">International Space Station</a>. </p>
+
+                <p>On the left you have the ISS image, and a reference map on the right. If you don't know about the city, just cklick on "I don't know" button. If there is some problem with the image and this is not loaded, then click on "No photo". If you know about the city appears in the image you can make your job. </p>
+
+                <p>You can make zoom in, zoom out to take a better view of it. Also you can rotate it to take a better orientation, pressing Shift+left button of the mouse. When you identify the location of the image, select it on the right map. Click on it and longitude and latitud will appear in the textbox</p>
+
+                <p>When you finish, click on the "Save" button</p>
+                <p>
+                You have a video tutorial to see the complete process in the next window
+                </p>
+                
+            </div>
+            
+            <div id="2" class="modal-body" style="display:none">
+                <p><iframe width="420" height="315" src="//www.youtube.com/embed/TFw1G0RnbJM" frameborder="0" allowfullscreen></iframe>
+               </p> 
+            </div>
+            
+            <div class="modal-footer">
+                <a id="prevBtn" href="#" onclick="showStep('prev')" class="btn">Previous</a>
+                <a id="nextBtn" href="#" onclick="showStep('next')" class="btn btn-success">Next</a> 
+                <a id="startContrib" href="../nightcitiesiss/newtask" class="btn btn-primary" style="display:none"><i class="icon-thumbs-up"></i> Star now!</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var step = -1;
+    function showStep(action) {
+        $("#" + step).hide();
+        if (action == 'next') {
+            step = step + 1;
+        }
+        if (action == 'prev') {
+            step = step - 1;
+        }
+        if (step == 0) {
+            $("#prevBtn").hide();
+        }
+        else {
+            $("#prevBtn").show();
+        }
+
+        if (step == 3 ) {
+            $("#nextBtn").hide();
+            $("#startContrib").show();
+        }
+        $("#" + step).show();
+    }
+
+    showStep('next');
+    $("#modal").modal('show');
+</script>

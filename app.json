@@ -1,0 +1,7 @@
+{
+    "name": "Locate Cites ISS beta",
+    "short_name": "locatecitiesiss",
+    "thumbnail": "https://raw.githubusercontent.com/jgcasta/lostatnight/master/img/logo.png",
+    "description": "Locate a City in images from ISS",
+    "question": "Help us to locate City images taken from ISS at nigth"
+}
