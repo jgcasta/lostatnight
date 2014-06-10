@@ -12,12 +12,6 @@
     height:475px;
     width: 475px;
   }
-  .txtISS {
-    float: left;
-    padding: 5px 5px;
-    height:115px;
-    width: 115px;
-  }
   .txtOSM {
     float: left;
     padding: 5px 5px;
@@ -73,12 +67,6 @@
 
         <!-- Link to picture data provided by NASA site -->
         <div>Use de [+] and [-] buttons to Zoom In and Zoom Out. Press Shift + Left Mouse Button to rotate the image <br><a id="hrefPicture" href='' target='_blank'>ISS picture data - Earth Science and Remote Sensing Unit, NASA-Johnson Space Center. "The Gateway to Astronaut Photography of Earth."</a></div>
-          
-
-
-
-
-
 
 
         <!-- These are maps -->
@@ -88,8 +76,8 @@
         <!-- DataList to save  -->
         <form id='dataList' name='dataList'>
           <input type='button'   onClick="removeOptions()"; value='Remove Selected'><br>
-            <SELECT id="xyValues" NAME="xyValues" class="txtISS" MULTIPLE size=6 width=5></SELECT>
-            <SELECT id="lonlatValues" NAME="lonlatValues" class="txtOSM" MULTIPLE size=6 width=7></SELECT>
+          <span class="label label-info" >XY</span>&nbsp;<input type='text' name='xyValues' style="width:150px">
+          <span class="label label-info" >Lon, Lat</span>&nbsp;<input type='text' name='lonlatValues' style="width:150px">
         </form>
     </div><!-- End of DIV for the submission buttons -->
 
@@ -160,7 +148,7 @@
     $("#disqus_thread").toggle();
     $(".btn-disqus").toggle();
     var disqus_shortname = 'pybossa'; 
-    //var disqus_identifier = taskId;
+    var disqus_identifier = taskId;
     var disqus_developer = 1;
 
     (function() {
@@ -192,18 +180,15 @@ var lonlat;
 var clickImg = false;
 var clickMap = false;
 var urlImage = '';
-var urlImageFirst = 'http://eol.jsc.nasa.gov/sseop/images/ESC/small/ISS030/ISS030-E-67805.JPG';
 
 pybossa.taskLoaded(function(task, deferred) {
     if ( !$.isEmptyObject(task) ) {
-        console.log('dentro de taskLoaded');
 
         task.answer = {
             'imageResult' : '',
             'XY': '',
             'LONLAT': '',
             'img_big': task.info.link_big,
-            'sharp': ''
         }
 
         deferred.resolve(task);
@@ -243,8 +228,8 @@ pybossa.presentTask(function(task, deferred) {
                 console.log('SAVE ');
                 $("#step1").hide();
                 
-                task.answer.XY = readAllValues(document.dataList.xyValues);
-                task.answer.LONLAT = readAllValues(document.dataList.lonlatValues);
+                task.answer.XY = document.dataList.xyValues.value;
+                task.answer.LONLAT = document.dataList.lonlatValues.value;
                 xy = '';
                 lonlat = '';
 
@@ -254,14 +239,26 @@ pybossa.presentTask(function(task, deferred) {
 
                 $("#step1").show();
 
-                changeMapOSM(task.info.citylon,task.info.citylat,9);
+                //center OSM map if aprox location is known
+                if (task.info.citylon != ''){
+                  changeMapOSM(task.info.citylon,task.info.citylat,9);
+                }else{
+                  changeMapOSM(0,0,3);
+                }
+
                 removeAllOptions();
                 loadNewISSImage(urlImage);
 
               }else if (answer == '404'){
                 removeAllOptions();
                 
-                changeMapOSM(task.info.citylon,task.info.citylat,9);
+                //center OSM map if aprox location is known
+                if (task.info.citylon != ''){
+                  changeMapOSM(task.info.citylon,task.info.citylat,9);
+                }else{
+                  changeMapOSM(0,0,3);
+                }
+
                 loadNewISSImage(urlImage);   
                 task.answer.imageResult = '404';
                 pybossa.saveTask(task.id, task.answer).done(function() {
@@ -271,7 +268,13 @@ pybossa.presentTask(function(task, deferred) {
               }else {
                 removeAllOptions();
                 
-                changeMapOSM(task.info.citylon,task.info.citylat,9);
+                //center OSM map if aprox location is known
+                if (task.info.citylon != ''){
+                  changeMapOSM(task.info.citylon,task.info.citylat,9);
+                }else{
+                  changeMapOSM(0,0,3);
+                }
+
                 loadNewISSImage(urlImage);   
                 task.answer.imageResult = 'unknown';
                 pybossa.saveTask(task.id, task.answer).done(function() {
@@ -292,7 +295,7 @@ pybossa.presentTask(function(task, deferred) {
 
 function updateTwitterValues(share_url) {
     $("#Twitter-share-section").html('&nbsp;'); 
-    $("#Twitter-share-section").html('<a href="https://twitter.com/share" class="twitter-share-button" data-url="'+share_url+'" data-text="Check out this amazing image!" data-size="large" data-hashtags="citiesAtNight">Tweet</a>');
+    $("#Twitter-share-section").html('<a href="https://twitter.com/share" class="twitter-share-button" data-url="'+share_url+'" data-text="Check out this amazing image!" data-size="large" data-hashtags="LostAtNight">Tweet</a>');
     twttr.widgets.load();
 }
 
@@ -300,18 +303,16 @@ function updateTwitterValues(share_url) {
 var firstTime = true;
 var clickImg = false;
 var clickMap = false;
-
 var pixelProjection;
-
 
 var iconStyle = new ol.style.Style({
   image: new ol.style.Circle({
       radius: 3,
       fill: new ol.style.Fill({
-          color: [255, 204, 102, 1]
+          color: [255, 0, 0, 1]
       }),
       stroke: new ol.style.Stroke({
-          color: [255, 204, 102, 1],
+          color: [255, 0, 0, 1],
           width: 1.5
       })
   }),
@@ -319,7 +320,6 @@ var iconStyle = new ol.style.Style({
 });
 
 var iconFeature;
-
 var map;
 var ISSlayer;
 
@@ -385,7 +385,7 @@ function loadISSImage(urlImage){
 
         if (clickImg == false){
           
-          addOption(document.dataList.xyValues, xy,xy);
+          document.dataList.xyValues.value = xy;
 
           addPointLayer();
           clickImg = true;
@@ -449,7 +449,7 @@ function loadOSM(lonOSM, latOSM, zoomOSM){
        if (clickMap == false){
         
         var coord = ol.coordinate.toStringXY(ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326'),6);
-        addOption(document.dataList.lonlatValues, coord,coord);
+        document.dataList.lonlatValues.value = coord;
         
         addPointLayerOSM();
         clickMap = true;
@@ -457,8 +457,7 @@ function loadOSM(lonOSM, latOSM, zoomOSM){
         
       }
     });
-
-}
+} // loadOSM
 
 function changeMapOSM(lonOSM, latOSM, zoomOSM){
 
@@ -476,20 +475,17 @@ function addPointLayer(){
 
   var pos = [];
   var icons = [];
-  
-  for(i=0;i<dataList.xyValues.options.length;i++){
     
-    if(typeof dataList.xyValues.options[i].value != 'undefined'){
-      
-      pos = dataList.xyValues.options[i].value.split(',');
+  if(typeof dataList.xyValues.value != 'undefined'){
+    
+    pos = dataList.xyValues.value.split(',');
 
-      iconFeature = new ol.Feature({ geometry: new ol.geom.Point([eval(pos[0]), eval(pos[1])])});
-      iconFeature.setStyle(iconStyle);
-      icons.push(iconFeature);    
+    iconFeature = new ol.Feature({ geometry: new ol.geom.Point([eval(pos[0]), eval(pos[1])])});
+    iconFeature.setStyle(iconStyle);
+    icons.push(iconFeature);    
 
-    }
-  }  
-
+  }
+    
   pointLayer = new ol.layer.Vector({ 
     source: new ol.source.Vector({ features: icons }) 
   })
@@ -505,19 +501,16 @@ function addPointLayerOSM(){
   window.mapOSM.removeLayer(pointLayerOSM);
   var posOSM = [];
   var iconsOSM = [];
-  
-  for(i=0;i<dataList.lonlatValues.options.length ;i++){
-    
-    if(typeof dataList.lonlatValues.options[i].value != 'undefined'){
       
-      posOSM = dataList.lonlatValues.options[i].value.split(',');
+  if(typeof dataList.lonlatValues.value != 'undefined'){
+    
+    posOSM = dataList.lonlatValues.value.split(',');
 
-      iconFeatureOSM = new ol.Feature({ geometry: new ol.geom.Point(ol.proj.transform([eval(posOSM[0]), eval(posOSM[1])], 'EPSG:4326', 'EPSG:3857'))});
-      iconFeatureOSM.setStyle(iconStyle);
-      iconsOSM.push(iconFeatureOSM);    
+    iconFeatureOSM = new ol.Feature({ geometry: new ol.geom.Point(ol.proj.transform([eval(posOSM[0]), eval(posOSM[1])], 'EPSG:4326', 'EPSG:3857'))});
+    iconFeatureOSM.setStyle(iconStyle);
+    iconsOSM.push(iconFeatureOSM);    
 
-    }
-  }  
+  }
 
   pointLayerOSM = new ol.layer.Vector({ 
     source: new ol.source.Vector({ features: iconsOSM }) 
@@ -535,77 +528,31 @@ function removePoint(){
 
 // auxiliar functions
 
-function addOption(selectbox,text,value ){
-  var optn = document.createElement("OPTION");
-  optn.text = text;
-  optn.value = value;
-  selectbox.options.add(optn);
-}
-
 
 function removeOptions(){
-    
-    
 
     var xyDeleted = false;
-    for(var i=0; i<dataList.xyValues.options.length;i++){
-      
-      if(dataList.xyValues.options[i].selected){
-        window.map.removeLayer(pointLayer);
-        window.mapOSM.removeLayer(pointLayerOSM);
-        dataList.xyValues.remove(i);
-        dataList.lonlatValues.remove(i);
-        xyDeleted = true;
-        addPointLayer();
-        addPointLayerOSM();
-      }
-      if( !xyDeleted && dataList.lonlatValues.options[i].selected ){
-        window.mapOSM.removeLayer(pointLayerOSM);
-        window.map.removeLayer(pointLayer);
-        dataList.lonlatValues.remove(i);
-        dataList.xyValues.remove(i);
-        xyDeleted = false;
-        addPointLayerOSM();
-        addPointLayer();
-      }
-    }
-    
+
+    window.map.removeLayer(pointLayer);
+    window.mapOSM.removeLayer(pointLayerOSM);
+    dataList.xyValues.value = '';
+    dataList.lonlatValues.value = '';
+    xyDeleted = true;
+    addPointLayer();
+    addPointLayerOSM();
 }
 
 function removeAllOptions(){
 
     removePoint();
 
-    document.getElementById('xyValues').options.length = 0;
-    document.getElementById('lonlatValues').options.length = 0;
+    dataList.xyValues.value = '';
+    dataList.lonlatValues.value = '';
+
+    //document.getElementById('xyValues').options.length = 0;
+    //document.getElementById('lonlatValues').options.length = 0;
 
 }
 
-function readAllValues(selectbox){
-  
-  var i;
-  var ret = new Array();
-  for(i=0;i<selectbox.options.length;i++){
-    
-    if(typeof selectbox.options[i].value != 'undefined'){
-      ret.push(selectbox.options[i].value + ';');
-    }
-  }  
-  return ret;
-}
-
-function getIimDim(urlimage){
-  var dim = new Array();
-  var img = new Image();
-  img.onload = function() {
-
-    dim[0] = this.width;
-    dim[1] = this.height;
-    console.log(dim[0]+' '+dim[1]);
-  }
-  img.src = urlimage;
-  return dim;
-}
-
-pybossa.run('lostAtNight');
+pybossa.run('LostAtNight');
 </script>
