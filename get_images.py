@@ -51,9 +51,9 @@ def get_iss_photos():
             idIss)
         idISS = idIss
 
-        citylon2 = str(i['citylon2'])
+        citylon2 = str(i['nlon'])
 
-        citylat2 = str(i['citylat2'])
+        citylat2 = str(i['nlat'])
         
         f = '50'
         
