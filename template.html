@@ -208,7 +208,7 @@ pybossa.presentTask(function(task, deferred) {
 
         // first time I load the whole map
         if (firstTime){
-            loadOSM(task.info.citylon,task.info.citylat,9);
+            loadOSM(task.info.citylon,task.info.citylat,7);
             loadISSImage(task.info.link_big);
             firstTime = false;
         }
@@ -243,7 +243,7 @@ pybossa.presentTask(function(task, deferred) {
 
                 //center OSM map if aprox location is known
                 if (task.info.citylon != ''){
-                  changeMapOSM(task.info.citylon,task.info.citylat,9);
+                  changeMapOSM(task.info.citylon,task.info.citylat,7);
                 }else{
                   changeMapOSM(0,0,3);
                 }
@@ -256,7 +256,7 @@ pybossa.presentTask(function(task, deferred) {
                 
                 //center OSM map if aprox location is known
                 if (task.info.citylon != ''){
-                  changeMapOSM(task.info.citylon,task.info.citylat,9);
+                  changeMapOSM(task.info.citylon,task.info.citylat,7);
                 }else{
                   changeMapOSM(0,0,3);
                 }
@@ -272,7 +272,7 @@ pybossa.presentTask(function(task, deferred) {
                 
                 //center OSM map if aprox location is known
                 if (task.info.citylon != ''){
-                  changeMapOSM(task.info.citylon,task.info.citylat,9);
+                  changeMapOSM(task.info.citylon,task.info.citylat,7);
                 }else{
                   changeMapOSM(0,0,3);
                 }

@@ -1,5 +1,5 @@
 CIty,ISS-ID,lat,lon,citylat2,citylon2,nlat,nlon,Model,date,hour,x1,x2,SUNelv,ExP,F,ISO,x3,NASA,x4,x5,Distance,x6
-Zurich,ISS030-E-237340,47.8,11.2,47.3685586,8.5404434,47.8,11.2,NIKON D3S S/N: 2007934,20120418,212124,211,329,-26,1/30,2.8,6400,0,0,0,http://eol.jsc.nasa.gov/scripts/sseop/photo.pl?mission=ISS030&roll=E&frame=237340,2.6943242177,1213
+Zurich,ISS030-E-237340,47.8,11.2,47.3685586,8.5404434,,,NIKON D3S S/N: 2007934,20120418,212124,211,329,-26,1/30,2.8,6400,0,0,0,http://eol.jsc.nasa.gov/scripts/sseop/photo.pl?mission=ISS030&roll=E&frame=237340,2.6943242177,1213
 Madrid,ISS030-E-209454,40.6,-1.1,40.52516075,-3.7718165396,40.6,-1.1,NIKON D3S S/N: 2007934,20120408,210112,212,307,-26,1/50,2.8,6400,0,0,0,http://eol.jsc.nasa.gov/scripts/sseop/photo.pl?mission=ISS030&roll=E&frame=209454,2.6728644811,1214
 Madrid,ISS030-E-209455,40.6,-1.1,40.52516075,-3.7718165396,40.6,-1.1,NIKON D3S S/N: 2007934,20120408,210113,212,307,-26,1/50,2.8,6400,0,0,0,http://eol.jsc.nasa.gov/scripts/sseop/photo.pl?mission=ISS030&roll=E&frame=209455,2.6728644811,1215
 Los Angeles,ISS027-E-13856,32.6,-116,34.0536781,-118.2427025,32.6,-116.4,NIKON D3S S/N: 2007934,20110417,113341,185,62,-21,1/15,2.8,12800,0,0,0,http://eol.jsc.nasa.gov/scripts/sseop/photo.pl?mission=ISS027&roll=E&frame=13856,2.6726194121,1216
