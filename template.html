@@ -189,6 +189,7 @@ pybossa.taskLoaded(function(task, deferred) {
             'XY': '',
             'LONLAT': '',
             'img_big': task.info.link_big,
+            'rotationAngle' : ''
         }
 
         deferred.resolve(task);
@@ -232,6 +233,7 @@ pybossa.presentTask(function(task, deferred) {
                 task.answer.LONLAT = document.dataList.lonlatValues.value;
                 xy = '';
                 lonlat = '';
+                task.answer.rotationAngle = getRotationAngle();
 
                 pybossa.saveTask(task.id, task.answer).done(function() {
                     deferred.resolve();
@@ -296,7 +298,7 @@ pybossa.presentTask(function(task, deferred) {
 function updateTwitterValues(share_url) {
     $("#Twitter-share-section").html('&nbsp;'); 
     $("#Twitter-share-section").html('<a href="https://twitter.com/share" class="twitter-share-button" data-url="'+share_url+'" data-text="Check out this amazing image!" data-size="large" data-hashtags="LostAtNight">Tweet</a>');
-    twttr.widgets.load();
+    //twttr.widgets.load();
 }
 
 // functions to show ISS picture and OSM Map
@@ -397,6 +399,11 @@ function loadISSImage(urlImage){
   img.src = urlImage;
   
 } // loadISSImage
+
+function getRotationAngle(){
+  var currentRadians = map.getView().getView2D().getRotation();
+  return currentRadians;
+}
 
 function unloadISSImage(){
   window.map.removeLayer(ISSlayer);
