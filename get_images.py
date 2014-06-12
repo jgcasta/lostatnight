@@ -28,8 +28,8 @@ def get_iss_photos():
     http://eol.jsc.nasa.gov/sseop/images/ESC/small/ISS030/ISS030-E-67805.JPG
     """
     photos = []
-    lista=asciitable.read('datosISS.csv')
-
+    lista=asciitable.read('atlasOfNight.csv')
+    
     for i in lista:
         tmpMission=i['ISS-ID'].split('-E-')
         mission = tmpMission[0]
@@ -67,5 +67,4 @@ def get_iss_photos():
                    )
         photos.append(tmp)
     return photos
-
 #get_iss_photos()
