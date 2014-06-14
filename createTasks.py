@@ -174,6 +174,7 @@ def run(app_config, options):
         question = app_config['question']
         [create_photo_task(app, p, question, priority=random.random()) for p in photos]
 
+
     pbclient.set('api_key', options.api_key)
     pbclient.set('endpoint', options.api_url)
 
