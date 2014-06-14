@@ -172,6 +172,7 @@ def run(app_config, options):
     def add_photo_tasks(app):
         photos = get_iss_photos(                                )
         question = app_config['question']
+        c=0
         for p in photos:
             create_photo_task(app, p, question, priority=random.random())
             c+=1
