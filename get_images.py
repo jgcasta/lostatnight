@@ -67,4 +67,4 @@ def get_iss_photos():
                    )
         photos.append(tmp)
     return photos
-#get_iss_photos()
+#print get_iss_photos()
