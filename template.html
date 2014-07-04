@@ -72,7 +72,8 @@
         </div><!-- End of DIV for the submission buttons -->
 
         <!-- Link to picture data provided by NASA site -->
-        <div>Use de [+] and [-] buttons to Zoom In and Zoom Out. Press Shift + Left Mouse Button to rotate the image <br><a id="hrefPicture" href='' target='_blank'>ISS picture data - Earth Science and Remote Sensing Unit, NASA-Johnson Space Center. "The Gateway to Astronaut Photography of Earth."</a></div>
+        <div><span class="label label-danger">Please, be patient with large ISS images</span><br>
+          Use de [+] and [-] buttons to Zoom In and Zoom Out. Press Shift + Left Mouse Button to rotate the image <br><a id="hrefPicture" href='' target='_blank'>ISS picture data - Earth Science and Remote Sensing Unit, NASA-Johnson Space Center. "The Gateway to Astronaut Photography of Earth."</a></div>
 
 
         <!-- These are maps -->
@@ -169,6 +170,9 @@
 </script>
 <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
  <script src="http://ol3js.org/en/master/build/ol.js" type="text/javascript"></script>
+ <script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
+ <script src="http://openlayers.org/api/OpenLayers.js"></script>
+ <script src="https://earthdata.nasa.gov/labs/gibs/examples/openlayers2/lib/openlayers-2.13.1/OpenLayers.js"></script>
  
 <script>
 function loadUserProgress() {
@@ -328,6 +332,20 @@ var iconStyle = new ol.style.Style({
   zIndex: 1
 });
 
+var iconStyleVIIRS = new ol.style.Style({
+  image: new ol.style.Circle({
+      radius: 5,
+      fill: new ol.style.Fill({
+          color: [255, 0, 0, 1]
+      }),
+      stroke: new ol.style.Stroke({
+          color: [255, 0, 0, 1],
+          width: 1.5
+      })
+  }),
+  zIndex: 1
+});
+
 var iconFeature;
 var map;
 var ISSlayer;
@@ -437,40 +455,46 @@ function loadNewISSImage(urlImage){
 }
 
 
+function handleMapClick(evt) {
 
-var mapOSM;
-
-function loadOSM(lonOSM, latOSM, zoomOSM){
-    mapOSM = new ol.Map({
-      target: 'mapOSM',
-      layers: [
-        new ol.layer.Tile({
-          source: new ol.source.OSM()
-        })
-      ],
-
-      view: new ol.View({
-        center: ol.proj.transform([eval(lonOSM), eval(latOSM)], 'EPSG:4326', 'EPSG:3857'), 
-        zoom: eval(zoomOSM)
-      })
-    });
-
-    mapOSM.on('click', function(evt) {
-      var coordinate = evt.coordinate;
-      var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(
-          coordinate, 'EPSG:3857', 'EPSG:4326'));
-
-       if (clickMap == false){
+      if (clickMap == false){
         
-        var coord = ol.coordinate.toStringXY(ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326'),6);
-        document.dataList.lonlatValues.value = coord;
+        var lonlat = mapOSM.getLonLatFromViewPortPx(evt.xy).transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326"));
+        var coord = lonlat.lon.toFixed(6) + ',' + lonlat.lat.toFixed(6);
+
+        addOption(document.dataList.lonlatValues, coord,coord);
         
         addPointLayerOSM();
         clickMap = true;
         clickImg = false;
-        
+        mapOSM.addLayer(pointLayerOSM);  
       }
+    } 
+
+
+var mapOSM;
+var osmlayer = new OpenLayers.Layer.OSM();
+var gmaplayerSt = new OpenLayers.Layer.Google("Google Streets",{numZoomLevels: 20});
+var gmaplayerSat = new OpenLayers.Layer.Google("Google Satellite",{type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22});
+
+var fromProjection = new OpenLayers.Projection("EPSG:4326");   
+var toProjection   = new OpenLayers.Projection("EPSG:900913");
+
+function loadOSM(lonOSM, latOSM, zoomOSM){
+
+    mapOSM = new OpenLayers.Map({
+        div: "mapOSM",
+         projection: "EPSG:4326"
     });
+
+    mapOSM.addLayers([gmaplayerSt,gmaplayerSat,osmlayer]);
+    
+    mapOSM.addControl(new OpenLayers.Control.LayerSwitcher());
+
+    var centerPosition = new OpenLayers.LonLat(eval(lonOSM),eval(latOSM)).transform( fromProjection, toProjection);
+    mapOSM.setCenter(centerPosition, zoomOSM );
+
+    mapOSM.events.register('click', mapOSM, handleMapClick);
 
     //load VIIRS help map
     mapVIIRS = new ol.Map({
@@ -482,10 +506,19 @@ function loadOSM(lonOSM, latOSM, zoomOSM){
       view: new ol.View({
         projection: ol.proj.get("EPSG:4326"),
                     extent: [-180, -90, 180, 90],
-            center: [eval(lonOSM), eval(latOSM)],
-            zoom: 2
+            center: [0,0],
+            zoom: 1
       })
     });
+
+    var icons = [];
+    nadirISS = new ol.Feature({ geometry: new ol.geom.Point([eval(lonOSM),eval(latOSM)])});
+    nadirISS.setStyle(iconStyleVIIRS);
+    icons.push(nadirISS); 
+
+    nadirLayer = new ol.layer.Vector({ source: new ol.source.Vector({ features: icons }) });
+  
+    mapVIIRS.addLayer(nadirLayer);    
 
 
 } // loadOSM
@@ -613,5 +646,5 @@ function removeAllOptions(){
     dataList.lonlatValues.value = '';
 }
 
-pybossa.run('LostAtNight');
+pybossa.run('LostAtNightgmaps');
 </script>
