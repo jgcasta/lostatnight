@@ -1,4 +1,4 @@
-Nightcitiesiss Application for georreferencing cities at night images from ISS
+Locating cities at night images from ISS
 ==============================================================================
 
 [![Build Status](https://travis-ci.org/jgcasta/lostatnight.svg?branch=master)](https://travis-ci.org/jgcasta/lostatnight)
