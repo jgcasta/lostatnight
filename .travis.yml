@@ -1,0 +1,6 @@
+language: python
+
+install:
+  - pip install asciitable
+
+script: python get_images.py
