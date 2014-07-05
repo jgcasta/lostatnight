@@ -25,7 +25,6 @@ Then, you can follow the next steps:
 *  Create an account in PyBossa
 *  Copy under your account profile your API-KEY
 *  Run python createTasks.py -u http://crowdcrafting.org -k API-KEY
-*  Open with your browser the Applications section and choose the FlickrPerson app. This will open the presenter for this demo application.
 
 Documentation
 =============
