@@ -17,6 +17,10 @@ If you need more information about this picture, you can click on "ISS picture d
 
 We apreciate your job very much
 
+Video tutorial
+==============
+[![ScreenShot](http://i.imgur.com/yzdDI5t.png)](http://www.youtube.com/embed/EugFeBm2hDk)
+
 
 Based on PyBossa, this application by [José Gómez Castaño](http://guaix.fis.ucm.es/DarkSkies) allows locate a night city picture taken from International Space Station. The application can be used at [Nigth Cites ISS](http://crowdcrafting.org/app/lostatnight)
 
