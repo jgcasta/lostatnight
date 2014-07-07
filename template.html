@@ -72,8 +72,8 @@
         </div><!-- End of DIV for the submission buttons -->
 
         <!-- Link to picture data provided by NASA site -->
-        <div><span class="label label-danger">Please, be patient with large ISS images</span><br>
-          Use de [+] and [-] buttons to Zoom In and Zoom Out. Press Shift + Left Mouse Button to rotate the image <br><a id="hrefPicture" href='' target='_blank'>ISS picture data - Earth Science and Remote Sensing Unit, NASA-Johnson Space Center. "The Gateway to Astronaut Photography of Earth."</a></div>
+        <div>
+      <span class="label label-danger">Please, be patient with large ISS images</span><br>          Use de [+] and [-] buttons to Zoom In and Zoom Out. Press Shift + Left Mouse Button to rotate the image <br><a id="hrefPicture" href='' target='_blank'>ISS picture data - Earth Science and Remote Sensing Unit, NASA-Johnson Space Center. "The Gateway to Astronaut Photography of Earth."</a></div>
 
 
         <!-- These are maps -->
@@ -244,7 +244,7 @@ pybossa.presentTask(function(task, deferred) {
                 task.answer.LONLAT = document.dataList.lonlatValues.value;
                 xy = '';
                 lonlat = '';
-                task.answer.rotationAngle = getRotationAngle();
+                //task.answer.rotationAngle = getRotationAngle();
 
                 pybossa.saveTask(task.id, task.answer).done(function() {
                     deferred.resolve();
@@ -261,6 +261,9 @@ pybossa.presentTask(function(task, deferred) {
 
                 removeAllOptions();
                 loadNewISSImage(urlImage);
+                pybossa.saveTask(task.id, task.answer).done(function() {
+                    deferred.resolve();
+                });
 
               }else if (answer == '404'){
                 removeAllOptions();
@@ -454,7 +457,6 @@ function loadNewISSImage(urlImage){
   img.src = urlImage;
 }
 
-
 function handleMapClick(evt) {
 
       if (clickMap == false){
@@ -462,7 +464,7 @@ function handleMapClick(evt) {
         var lonlat = mapOSM.getLonLatFromViewPortPx(evt.xy).transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326"));
         var coord = lonlat.lon.toFixed(6) + ',' + lonlat.lat.toFixed(6);
 
-        addOption(document.dataList.lonlatValues, coord,coord);
+        document.dataList.lonlatValues.value = coord; 
         
         addPointLayerOSM();
         clickMap = true;
@@ -481,7 +483,6 @@ var fromProjection = new OpenLayers.Projection("EPSG:4326");
 var toProjection   = new OpenLayers.Projection("EPSG:900913");
 
 function loadOSM(lonOSM, latOSM, zoomOSM){
-
     mapOSM = new OpenLayers.Map({
         div: "mapOSM",
          projection: "EPSG:4326"
@@ -518,19 +519,26 @@ function loadOSM(lonOSM, latOSM, zoomOSM){
 
     nadirLayer = new ol.layer.Vector({ source: new ol.source.Vector({ features: icons }) });
   
-    mapVIIRS.addLayer(nadirLayer);    
-
+    mapVIIRS.addLayer(nadirLayer);
 
 } // loadOSM
 
 function changeMapOSM(lonOSM, latOSM, zoomOSM){
 
-  var view= new ol.View({
-    center: ol.proj.transform([eval(lonOSM), eval(latOSM)], 'EPSG:4326', 'EPSG:3857'),
-    zoom: eval(zoomOSM)
-  });
-  
-  mapOSM.setView(view);
+  // change OSM
+  var centerPosition = new OpenLayers.LonLat(eval(lonOSM),eval(latOSM)).transform( fromProjection, toProjection);
+  mapOSM.setCenter(centerPosition, zoomOSM );
+
+  // change VIIRS
+  mapVIIRS.removeLayer(nadirLayer);
+  var icons = [];
+  nadirISS = new ol.Feature({ geometry: new ol.geom.Point([eval(lonOSM),eval(latOSM)])});
+  nadirISS.setStyle(iconStyleVIIRS);
+  icons.push(nadirISS); 
+
+  nadirLayer = new ol.layer.Vector({ source: new ol.source.Vector({ features: icons }) });
+
+  mapVIIRS.addLayer(nadirLayer);
 
 }
 
@@ -559,34 +567,47 @@ function addPointLayer(){
 
 }
 
-var pointLayerOSM;
+
 var pointLayer;
+var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+enderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+var pointLayerOSM = new OpenLayers.Layer.Vector('Points', {
+        styleMap: new OpenLayers.StyleMap({
+            pointRadius: "5", 
+            fillColor: "#fc0000"
+        }),
+        renderers: renderer
+    });
 function addPointLayerOSM(){
 
-  window.mapOSM.removeLayer(pointLayerOSM);
+  //window.mapOSM.removeLayer(pointLayerOSM);
+  pointLayerOSM.destroyFeatures();
+  if(typeof featureP != 'undefined'){
+    console.log('borrando ' + featureP);
+    pointLayerOSM.destroyFeatures();
+  }
   var posOSM = [];
   var iconsOSM = [];
+  var features = new Array(50);
       
   if(typeof dataList.lonlatValues.value != 'undefined'){
     
-    posOSM = dataList.lonlatValues.value.split(',');
+      posOSM = dataList.lonlatValues.value.split(',');
 
-    iconFeatureOSM = new ol.Feature({ geometry: new ol.geom.Point(ol.proj.transform([eval(posOSM[0]), eval(posOSM[1])], 'EPSG:4326', 'EPSG:3857'))});
-    iconFeatureOSM.setStyle(iconStyle);
-    iconsOSM.push(iconFeatureOSM);    
+      var point = new OpenLayers.Geometry.Point(eval(posOSM[0]), eval(posOSM[1]));
+      point.transform(fromProjection, toProjection);
+      var featureP = new OpenLayers.Feature.Vector(point);
 
+      pointLayerOSM.addFeatures([featureP]);
   }
 
-  pointLayerOSM = new ol.layer.Vector({ 
-    source: new ol.source.Vector({ features: iconsOSM }) 
-  })
   
-  mapOSM.addLayer(pointLayerOSM);
+  //mapOSM.addLayer(pointLayerOSM);
 }
 
 function removePoint(){
   window.map.removeLayer(pointLayer);
-  window.mapOSM.removeLayer(pointLayerOSM);
+  pointLayerOSM.destroyFeatures();
 }
 
 var sourceViirs = new ol.source.WMTS({
@@ -625,6 +646,7 @@ var viirs = new ol.layer.Tile({source: sourceViirs});
 // auxiliar functions
 
 
+
 function removeOptions(){
 
     var xyDeleted = false;
@@ -646,5 +668,5 @@ function removeAllOptions(){
     dataList.lonlatValues.value = '';
 }
 
-pybossa.run('LostAtNightgmaps');
+pybossa.run('LostAtNight');
 </script>
