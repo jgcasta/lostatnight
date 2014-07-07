@@ -1,7 +1,7 @@
 {
-    "name": "Lost al Night",
+    "name": "Lost at Night",
     "short_name": "LostAtNight",
     "thumbnail": "https://raw.githubusercontent.com/jgcasta/lostatnight/master/img/logo.png",
     "description": "Locate a City in images from ISS",
-    "question": "Help us to locate City images taken from ISS at nigth"
+    "question": "Help us to locate City images taken from ISS at night"
 }
