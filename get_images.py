@@ -1,34 +1,27 @@
 # -*- coding: utf-8 -*-
 
-# This file is part of PyBOSSA.
-#
-# PyBOSSA is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# PyBOSSA is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
-#
-# You should have received a copy of the GNU Affero General Public License
-# along with PyBOSSA.  If not, see <http://www.gnu.org/licenses/>.
 
 import json
 import asciitable
 
+def skip_bad_lines(self, str_vals, ncols):  
+  """Simply ignore every line with the wrong number of columns."""  
+    
+  print 'Skipping line:', ' '.join(str_vals)  
+  return None  
 
 def get_iss_photos():
     """
-    Gets public photos from ISS missions
+    Gets public photos from ISS missions and provide data input for tasks
     :arg string size: Size of the image from ISS mission
     :returns: A list of photos.
     :rtype: list
     http://eol.jsc.nasa.gov/sseop/images/ESC/small/ISS030/ISS030-E-67805.JPG
     """
     photos = []
-    lista=asciitable.read('atlasOfNight.csv')
+
+    #asciitable.BaseReader.inconsistent_handler = skip_bad_lines 
+    lista=asciitable.read('atlasOfNight.csv',guess=False,delimiter=",")
     
     for i in lista:
         tmpMission=i['ISS-ID'].split('-E-')
