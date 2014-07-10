@@ -300,11 +300,11 @@ pybossa.presentTask(function(task, deferred) {
 
             }
         });
-        $("#loading").hide();
+        //$("#loading").hide();
     }
     else {
         $(".skeleton").hide();
-        $("#loading").hide();
+        //$("#loading").hide();
         $("#finish").fadeIn(500);
     }
 });
@@ -381,6 +381,7 @@ var dimX,dimY;
 
 function loadISSImage(urlImage){
 
+  $("#loading").show();
   var dim = new Array();
   var img = new Image();
   img.onload = function() {
@@ -409,6 +410,7 @@ function loadISSImage(urlImage){
         })
       });
 
+
       map.on('click', function(evt) {
         var coordinate = evt.coordinate;
         var xy = ol.coordinate.toStringXY(ol.proj.transform(coordinate, pixelProjection, pixelProjection));
@@ -423,6 +425,7 @@ function loadISSImage(urlImage){
 
         }
       });
+      $("#loading").hide();
   } // img.load
   img.src = urlImage;
   
@@ -438,7 +441,7 @@ function unloadISSImage(){
 }
 
 function loadNewISSImage(urlImage){
-
+  $("#loading").show();
   var dim = new Array();
   var img = new Image();
   img.onload = function() {
@@ -452,6 +455,7 @@ function loadNewISSImage(urlImage){
     map.removeLayer(ISSlayer);
     createISSLayer(urlImage, dimX, dimY); 
     map.addLayer(ISSlayer);
+    $("#loading").hide();
 
   } // img.load
   img.src = urlImage;
@@ -570,7 +574,7 @@ function addPointLayer(){
 
 var pointLayer;
 var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
-enderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
 var pointLayerOSM = new OpenLayers.Layer.Vector('Points', {
         styleMap: new OpenLayers.StyleMap({
             pointRadius: "5", 
