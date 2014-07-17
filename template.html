@@ -1,3 +1,6 @@
+  <!--
+  Como leer el valor de los checkbox sharp y cloud
+-->
   <link href="http://www.iderail.es/testiss/css/ol.css" rel="stylesheet">
   <style type="text/css">
   .map {
@@ -68,12 +71,17 @@
                 <button class="btn btn-large btn-answer" value='save'>Save</button>
                 <button class="btn btn-large btn-answer" value='404'>No photo</button>
                 <button class="btn btn-large btn-answer" value='unknown'>I don't know</button>
+                
             </div><!-- End of DIV for the submission buttons -->
+
         </div><!-- End of DIV for the submission buttons -->
 
         <!-- Link to picture data provided by NASA site -->
         <div>
-      <span class="label label-danger">Please, be patient with large ISS images</span><br>          Use de [+] and [-] buttons to Zoom In and Zoom Out. Press Shift + Left Mouse Button to rotate the image <br><a id="hrefPicture" href='' target='_blank'>ISS picture data - Earth Science and Remote Sensing Unit, NASA-Johnson Space Center. "The Gateway to Astronaut Photography of Earth."</a></div>
+          <form id='imageQuality' name = 'imageQuality'>
+      <span class="label label-danger">Please, be patient with large ISS images</span><span class="label label-info">&nbsp;Image Sharp: Good<input type='radio' name='sharp' value='good'>&nbsp;Poor<input type='radio' name='sharp' value='poor'></form>
+                &nbsp;Cludy: None<input type='radio' name='cloud' value='none'>&nbsp;More 50%<input type='radio' name='cloud' value='50'><br></span>
+      <br>          Use de [+] and [-] buttons to Zoom In and Zoom Out. Press Shift + Left Mouse Button to rotate the image <br><a id="hrefPicture" href='' target='_blank'>ISS picture data - Earth Science and Remote Sensing Unit, NASA-Johnson Space Center. "The Gateway to Astronaut Photography of Earth."</a></div>
 
 
         <!-- These are maps -->
@@ -82,6 +90,7 @@
 
         <!-- DataList to save  -->
         <form id='dataList' name='dataList'>
+          
           <input type='button'   onClick="removeOptions()"; value='Remove Selected'><br>
           <span class="label label-info" >XY</span>&nbsp;<input type='text' name='xyValues' style="width:150px">
           <span class="label label-info" >Lon, Lat</span>&nbsp;<input type='text' name='lonlatValues' style="width:150px"><br><br>
@@ -201,7 +210,9 @@ pybossa.taskLoaded(function(task, deferred) {
             'XY': '',
             'LONLAT': '',
             'img_big': task.info.link_big,
-            'rotationAngle' : ''
+            'rotationAngle' : '',
+            'sharp': '',
+            'cloud': ''
         }
 
         deferred.resolve(task);
@@ -244,6 +255,8 @@ pybossa.presentTask(function(task, deferred) {
                 task.answer.LONLAT = document.dataList.lonlatValues.value;
                 xy = '';
                 lonlat = '';
+                task.answer.sharp = readSharp();
+                task.answer.cloud = readCloud();
                 //task.answer.rotationAngle = getRotationAngle();
 
                 pybossa.saveTask(task.id, task.answer).done(function() {
@@ -672,5 +685,29 @@ function removeAllOptions(){
     dataList.lonlatValues.value = '';
 }
 
-pybossa.run('LostAtNight');
+function readSharp(){
+  var sharp = document.imageQuality.sharp;
+
+  var i;
+  for (i=0;i<sharp.length;i++) {
+    if (sharp[i].checked) {
+        retornar = sharp[i].value;
+    }
+  }
+  return retornar
+}
+
+function readCloud(){
+  var cloud = document.imageQuality.cloud;
+
+  var i;
+  for (i=0;i<cloud.length;i++) {
+    if (cloud[i].checked) {
+        retornar = cloud[i].value;
+    }
+  }
+  return retornar
+}
+
+pybossa.run('LostAtNighttest');
 </script>
