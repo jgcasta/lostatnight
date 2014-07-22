@@ -251,9 +251,10 @@ pybossa.presentTask(function(task, deferred) {
                 task.answer.LONLAT = document.dataList.lonlatValues.value;
                 xy = '';
                 lonlat = '';
-                task.answer.sharp = readSharp();
-                task.answer.cloud = readCloud();
+                //task.answer.sharp = readSharp();
+                //task.answer.cloud = readCloud();
                 //task.answer.rotationAngle = getRotationAngle();
+                $("#success").show();
 
                 pybossa.saveTask(task.id, task.answer).done(function() {
                     deferred.resolve();
@@ -273,6 +274,7 @@ pybossa.presentTask(function(task, deferred) {
                 pybossa.saveTask(task.id, task.answer).done(function() {
                     deferred.resolve();
                 });
+                $("#success").hide();
 
               }else if (answer == '404'){
                 removeAllOptions();
@@ -286,9 +288,9 @@ pybossa.presentTask(function(task, deferred) {
 
                 loadNewISSImage(urlImage);   
                 task.answer.imageResult = '404';
-                pybossa.saveTask(task.id, task.answer).done(function() {
+                //pybossa.saveTask(task.id, task.answer).done(function() {
                     deferred.resolve();
-                });  
+                //});  
                 
               }else {
                 removeAllOptions();
@@ -302,9 +304,9 @@ pybossa.presentTask(function(task, deferred) {
 
                 loadNewISSImage(urlImage);   
                 task.answer.imageResult = 'unknown';
-                pybossa.saveTask(task.id, task.answer).done(function() {
+                //pybossa.saveTask(task.id, task.answer).done(function() {
                     deferred.resolve();
-                });  
+                //});  
               }
 
             }
