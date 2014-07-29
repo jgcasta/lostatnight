@@ -201,17 +201,17 @@ var urlImage = '';
 pybossa.taskLoaded(function(task, deferred) {
     if ( !$.isEmptyObject(task) ) {
 
-        task.answer = {
-            'imageResult' : '',
-            'XY': '',
-            'LONLAT': '',
-            'img_big': task.info.link_big,
-            'rotationAngle' : '',
-            'sharp': '',
-            'cloud': ''
-        }
+      task.answer = {
+          'imageResult' : '',
+          'XY': '',
+          'LONLAT': '',
+          'img_big': task.info.link_big,
+          'rotationAngle' : '',
+          'sharp': '',
+          'cloud': ''
+      }
 
-        deferred.resolve(task);
+      deferred.resolve(task);
     }
     else {
         deferred.resolve(task);
@@ -220,45 +220,41 @@ pybossa.taskLoaded(function(task, deferred) {
 });
 
 pybossa.presentTask(function(task, deferred) {
-    
-    if ( !$.isEmptyObject(task) ) {
-        
-        loadUserProgress();
+
+  if ( !$.isEmptyObject(task) ) {
+
+    loadUserProgress();
 
         // first time I load the whole map
         if (firstTime){
-            loadOSM(task.info.citylon,task.info.citylat,7);
-            loadISSImage(task.info.link_big);
-            firstTime = false;
+          loadOSM(task.info.citylon,task.info.citylat,7);
+          loadISSImage(task.info.link_big);
+          firstTime = false;
         }
 
         $("#question").html(task.info.question);
         $('#task-id').html(task.id);
         $('.btn-answer').off('click').on('click', function(evt) {
-        $("#hrefPicture").attr("href",task.info.linkData);
-        $("#fb-like").attr("data-href",task.info.linkData);
+          $("#hrefPicture").attr("href",task.info.linkData);
+          $("#fb-like").attr("data-href",task.info.linkData);
 
-            var answer = $(evt.target).attr("value");
-            urlImage = task.info.link_big;
+          var answer = $(evt.target).attr("value");
+          urlImage = task.info.link_big;
 
-            if (typeof answer != 'undefined') {
+          if (typeof answer != 'undefined') {
 
-              if (answer == 'save'){
+            if (answer == 'save'){
 
-                $("#step1").hide();
-                
-                task.answer.XY = document.dataList.xyValues.value;
-                task.answer.LONLAT = document.dataList.lonlatValues.value;
-                xy = '';
-                lonlat = '';
+              $("#step1").hide();
+
+              task.answer.XY = document.dataList.xyValues.value;
+              task.answer.LONLAT = document.dataList.lonlatValues.value;
+              xy = '';
+              lonlat = '';
                 //task.answer.sharp = readSharp();
                 //task.answer.cloud = readCloud();
                 //task.answer.rotationAngle = getRotationAngle();
                 $("#success").show();
-
-                pybossa.saveTask(task.id, task.answer).done(function() {
-                    deferred.resolve();
-                });
 
                 $("#step1").show();
 
@@ -272,7 +268,7 @@ pybossa.presentTask(function(task, deferred) {
                 removeAllOptions();
                 loadNewISSImage(urlImage);
                 pybossa.saveTask(task.id, task.answer).done(function() {
-                    deferred.resolve();
+                  deferred.resolve();
                 });
                 $("#success").hide();
 
@@ -288,13 +284,13 @@ pybossa.presentTask(function(task, deferred) {
 
                 loadNewISSImage(urlImage);   
                 task.answer.imageResult = '404';
-                pybossa.saveTask(task.id, task.answer).done(function() {
-                    deferred.resolve();
-                });  
-                
+                //pybossa.saveTask(task.id, task.answer).done(function() {
+                  deferred.resolve();
+                //});  
+
               }else {
                 removeAllOptions();
-                
+
                 //center OSM map if aprox location is known
                 if (task.info.citylon != ''){
                   changeMapOSM(task.info.citylon,task.info.citylat,7);
@@ -305,20 +301,20 @@ pybossa.presentTask(function(task, deferred) {
                 loadNewISSImage(urlImage);   
                 task.answer.imageResult = 'unknown';
                 pybossa.saveTask(task.id, task.answer).done(function() {
-                    deferred.resolve();
+                  deferred.resolve();
                 });  
               }
 
             }
-        });
+          });
         //$("#loading").hide();
-    }
-    else {
+      }
+      else {
         $(".skeleton").hide();
         //$("#loading").hide();
         $("#finish").fadeIn(500);
-    }
-});
+      }
+    });
 
 function updateTwitterValues(share_url) {
     $("#Twitter-share-section").html('&nbsp;'); 
