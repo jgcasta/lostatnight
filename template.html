@@ -220,7 +220,6 @@ pybossa.taskLoaded(function(task, deferred) {
 });
 
 pybossa.presentTask(function(task, deferred) {
-
   if ( !$.isEmptyObject(task) ) {
 
     loadUserProgress();
@@ -231,6 +230,16 @@ pybossa.presentTask(function(task, deferred) {
           loadISSImage(task.info.link_big);
           firstTime = false;
         }
+        else {
+          removeAllOptions();
+          //center OSM map if aprox location is known
+          if (task.info.citylon != ''){
+            changeMapOSM(task.info.citylon,task.info.citylat,7);
+          }else{
+            changeMapOSM(0,0,1);
+          }
+          loadNewISSImage(task.info.link_big);
+        }
 
         $("#question").html(task.info.question);
         $('#task-id').html(task.id);
@@ -239,66 +248,41 @@ pybossa.presentTask(function(task, deferred) {
           $("#fb-like").attr("data-href",task.info.linkData);
 
           var answer = $(evt.target).attr("value");
-          urlImage = task.info.link_big;
 
           if (typeof answer != 'undefined') {
 
             if (answer == 'save'){
 
-              $("#step1").hide();
+                $("#step1").hide();
 
-              task.answer.XY = document.dataList.xyValues.value;
-              task.answer.LONLAT = document.dataList.lonlatValues.value;
-              xy = '';
-              lonlat = '';
+                task.answer.XY = document.dataList.xyValues.value;
+                task.answer.LONLAT = document.dataList.lonlatValues.value;
+                xy = '';
+                lonlat = '';
                 //task.answer.sharp = readSharp();
                 //task.answer.cloud = readCloud();
                 //task.answer.rotationAngle = getRotationAngle();
                 $("#success").show();
 
+                // pybossa.saveTask(task.id, task.answer).done(function() {
+                //   deferred.resolve();
+                // });
+
                 $("#step1").show();
 
-                //center OSM map if aprox location is known
-                if (task.info.citylon != ''){
-                  changeMapOSM(task.info.citylon,task.info.citylat,7);
-                }else{
-                  changeMapOSM(0,0,1);
-                }
-
-                removeAllOptions();
-                loadNewISSImage(urlImage);
                 pybossa.saveTask(task.id, task.answer).done(function() {
                   deferred.resolve();
                 });
                 $("#success").hide();
 
               }else if (answer == '404'){
-                removeAllOptions();
-                
-                //center OSM map if aprox location is known
-                if (task.info.citylon != ''){
-                  changeMapOSM(task.info.citylon,task.info.citylat,7);
-                }else{
-                  changeMapOSM(0,0,1);
-                }
-
-                loadNewISSImage(urlImage);   
                 task.answer.imageResult = '404';
                 pybossa.saveTask(task.id, task.answer).done(function() {
                   deferred.resolve();
                 });  
 
-              }else {
-                removeAllOptions();
+                }else {
 
-                //center OSM map if aprox location is known
-                if (task.info.citylon != ''){
-                  changeMapOSM(task.info.citylon,task.info.citylat,7);
-                }else{
-                  changeMapOSM(0,0,1);
-                }
-
-                loadNewISSImage(urlImage);   
                 task.answer.imageResult = 'unknown';
                 pybossa.saveTask(task.id, task.answer).done(function() {
                   deferred.resolve();
