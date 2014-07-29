@@ -284,9 +284,9 @@ pybossa.presentTask(function(task, deferred) {
 
                 loadNewISSImage(urlImage);   
                 task.answer.imageResult = '404';
-                //pybossa.saveTask(task.id, task.answer).done(function() {
+                pybossa.saveTask(task.id, task.answer).done(function() {
                   deferred.resolve();
-                //});  
+                });  
 
               }else {
                 removeAllOptions();
@@ -302,7 +302,7 @@ pybossa.presentTask(function(task, deferred) {
                 task.answer.imageResult = 'unknown';
                 pybossa.saveTask(task.id, task.answer).done(function() {
                   deferred.resolve();
-                });  
+                });
               }
 
             }
