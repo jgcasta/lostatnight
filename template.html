@@ -449,6 +449,7 @@ function unloadISSImage(){
 
 function loadNewISSImage(urlImage){
   $("#loading").show();
+  $('#map').hide();
   var dim = new Array();
   var img = new Image();
   img.onload = function() {
@@ -462,6 +463,8 @@ function loadNewISSImage(urlImage){
     map.removeLayer(ISSlayer);
     createISSLayer(urlImage, dimX, dimY); 
     map.addLayer(ISSlayer);
+    $('#map').show();
+
     $("#loading").hide();
 
   } // img.load
