@@ -477,7 +477,7 @@ var osmlayer = new OpenLayers.Layer.OSM();
 var gmaplayerSt = new OpenLayers.Layer.Google("Google Streets",{numZoomLevels: 20});
 var gmaplayerSat = new OpenLayers.Layer.Google("Google Satellite",{type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22});
 
-var fromProjection = new OpenLayers.Projection("EPSG:4326");   
+var fromProjection = new OpenLayers.Projection("EPSG:4326");
 var toProjection   = new OpenLayers.Projection("EPSG:900913");
 
 function loadOSM(lonOSM, latOSM, zoomOSM){
@@ -486,8 +486,20 @@ function loadOSM(lonOSM, latOSM, zoomOSM){
          projection: "EPSG:4326"
     });
 
-    mapOSM.addLayers([gmaplayerSt,gmaplayerSat,osmlayer]);
-    
+// create point in OSM map with task coordinates
+    var locationPointLayer = new OpenLayers.Layer.Vector('Location', {
+            styleMap: new OpenLayers.StyleMap({
+                pointRadius: "5", 
+                fillColor: "#00cc00",
+            }),
+            renderers: renderer
+        });
+    var point = new OpenLayers.Geometry.Point(eval(lonOSM),eval(latOSM));
+    point.transform(fromProjection, toProjection);
+    var featureP = new OpenLayers.Feature.Vector(point);
+    locationPointLayer.addFeatures([featureP]);
+
+    mapOSM.addLayers([gmaplayerSt,gmaplayerSat,osmlayer, locationPointLayer]);
     mapOSM.addControl(new OpenLayers.Control.LayerSwitcher());
 
     var centerPosition = new OpenLayers.LonLat(eval(lonOSM),eval(latOSM)).transform( fromProjection, toProjection);
@@ -527,6 +539,14 @@ function changeMapOSM(lonOSM, latOSM, zoomOSM){
   var centerPosition = new OpenLayers.LonLat(eval(lonOSM),eval(latOSM)).transform( fromProjection, toProjection);
   mapOSM.setCenter(centerPosition, zoomOSM );
 
+// update point with lat and lon values
+  var locationPointLayer = mapOSM.getLayersByName('Location')[0];
+  locationPointLayer.removeAllFeatures();
+  var point = new OpenLayers.Geometry.Point(eval(lonOSM),eval(latOSM));
+  point.transform(fromProjection, toProjection);
+  var featureP = new OpenLayers.Feature.Vector(point);
+  locationPointLayer.addFeatures([featureP]);
+
   // change VIIRS
   mapVIIRS.removeLayer(nadirLayer);
   var icons = [];
@@ -553,14 +573,14 @@ function addPointLayer(){
 
     iconFeature = new ol.Feature({ geometry: new ol.geom.Point([eval(pos[0]), eval(pos[1])])});
     iconFeature.setStyle(iconStyle);
-    icons.push(iconFeature);    
+    icons.push(iconFeature);
 
   }
-    
+
   pointLayer = new ol.layer.Vector({ 
     source: new ol.source.Vector({ features: icons }) 
   })
-  
+
   map.addLayer(pointLayer);
 
 }
@@ -576,6 +596,7 @@ var pointLayerOSM = new OpenLayers.Layer.Vector('Points', {
         }),
         renderers: renderer
     });
+
 function addPointLayerOSM(){
 
   //window.mapOSM.removeLayer(pointLayerOSM);
