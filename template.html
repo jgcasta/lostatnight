@@ -61,12 +61,12 @@
 
 <div class="row skeleton" style="width:1550px"> <!-- Start Skeleton Row-->
     <div class="span12" style="width:1550px"><!-- Start of Question and Submission DIV (column) -->
-        <h1 id="question">Do you know about this City?</h1> <!-- The question will be loaded here -->
+        <h1 id="question"><span id="i18n_quiestion">Do you know about this City?</span></h1> <!-- The question will be loaded here -->
         <div id="step1" class="btn-group" style="text-align:center"> <!-- Start DIV for the submission buttons -->
             <div id="answer" class="btn-group" style="text-align:center"> <!-- Start DIV for the submission buttons -->
                 <button class="btn btn-large btn-answer" value='save'><span id="i18n_save">Save</span></button>
-                <button class="btn btn-large btn-answer" value='404'><span id="i18n_nophoto">No photo</span></button>
-                <button class="btn btn-large btn-answer" value='unknown'><span id="i18n_dontknow">I don't know</span></button>
+                <button class="btn btn-large btn-answer" value='404'><span id="i18n_no_photo">No photo</span></button>
+                <button class="btn btn-large btn-answer" value='unknown'><span id="i18n_i_dont_know">I don't know</span></button>
                 
             </div><!-- End of DIV for the submission buttons -->
 
@@ -710,5 +710,73 @@ pybossa.run('LostAtNight');
 // Default language
 var userLocale = "en";
 // Translations
-var messages = {"en": {}}
+var messages = {"en": {
+                        "i18n_welldone": "Well done!",
+                        "i18n_welldone_text": "Your answer has been saved",
+                        "i18n_loading_next_task": "Loading next task...",
+                        "i18n_task_completed": "The task has been completed!",
+                        "i18n_thanks": "Thanks a lot!",
+                        "i18n_congratulations": "Congratulations",
+                        "i18n_congratulations_text": "You have participated in all available tasks!",
+                        "i18n_no_photo": "No photo",
+                        "i18n_i_dont_know": "I don't know",
+                        "i18n_working_task": "You are working now on task:",
+                        "i18n_tasks_completed": "You have completed: ",
+                        "i18n_tasks_from": " tasks from ",
+                        "i18n_quiestion":"Do you know about this City?",
+                        "i18n_save":"Save",
+                        "i18n_dontknow":"I don't know",
+                        "i18n_wait":"Please, be patient with large ISS images",
+                        "i18n_imagesharp":"Image Sharp:",
+                        "i18n_good":"Good",
+                        "i18n_medium":"Medium",
+                        "i18n_poor":"Poor",
+                        "i18n_cloudy":"Cloudy",
+                        "i18n_none":"None",
+                        "i18n_few":"Less than 50%",
+                        "i18n_more":"More than 50%",
+                        "i18n_zoom":"Use the [+] and [-] buttons to Zoom In and Zoom Out. Keep Shift + Left mouse button pressed while moving the mouse will rotate the image.",
+                        "i18n_viirs":"2012 Night View from SNPP-VIIRS"
+                     },
+                      "es": {
+                        "i18n_welldone": "Bien hecho!",
+                        "i18n_welldone_text": "Tu respuesta ha sido guardada",
+                        "i18n_loading_next_task": "Cargando la siguiente tarea...",
+                        "i18n_task_completed": "La tarea ha sido completadas!",
+                        "i18n_thanks": "Muchísimas gracias!",
+                        "i18n_congratulations": "Enhorabuena",
+                        "i18n_congratulations_text": "Has participado en todas las tareas disponibles!",
+                        "i18n_no_photo": "No hay foto",
+                        "i18n_i_dont_know": "No lo sé",
+                        "i18n_working_task": "Estas trabajando en la tarea:",
+                        "i18n_tasks_completed": "Has completado: ",
+                        "i18n_tasks_from": " tareas de ",
+                        "i18n_quiestion":"Intenta localizar esta ciudad",
+                        "i18n_save":"Guardar",
+                        "i18n_wait":"Por favor, se paciente las imagenes de la ISS son grandes",
+                        "i18n_imagesharp":"Enfoque:",
+                        "i18n_good":"Bueno",
+                        "i18n_medium":"Medio",
+                        "i18n_poor":"Pobre",
+                        "i18n_cloudy":"Nubosidad",
+                        "i18n_none":"Ninguna",
+                        "i18n_few":"Menos de 50%",
+                        "i18n_more":"Más de 50%",
+                        "i18n_zoom":"Usa  [+] y [-] para agrandar and empequeñecer. Presiona Mayusculas + boton izquierdo del ratón mientras mueves el ratón para rotar la imagén.",
+                        "i18n_viirs":"Imagen nocturna de SNPP-VIIRS (2012)"
+                     },      
+};
+// Update userLocale with server side information
+$(document).ready(function(){
+    userLocale = document.getElementById('PYBOSSA_USER_LOCALE').textContent.trim();
+    i18n_translate();
+});
+
+function i18n_translate() {
+    var ids = Object.keys(messages[userLocale])
+    for (i=0; i<ids.length; i++) {
+        console.log("Translating: " + ids[i]);
+        document.getElementById(ids[i]).innerHTML = messages[userLocale][ids[i]];
+    }
+}
 </script>
