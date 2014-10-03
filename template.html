@@ -35,14 +35,14 @@
     <div class="span6 offset2" style="height:10px">
         <div id="success" class="alert alert-success" style="display:none;">
             <a class="close">×</a>
-            <strong id="i18n_welldone">Well done!</strong> <spanid="i18n_welldone_text">Your answer has been saved</span>
+            <strong id="i18n_welldone">Well done!</strong> <span id="i18n_welldone_text">Your answer has been saved</span>
         </div>
         <div id="loading" class="alert alert-info" style="display:none;">
             <a class="close">×</a>
             <span id="i18n_loading_next_task">Loading next task...</span>
         </div>
         <div id="taskcompleted" class="alert alert-info" style="display:none;">
-            <strong id="i18n_task_completed">The task has been completed!</strong> Thanks a lot!
+            <strong id="i18n_task_completed">The task has been completed! Thanks a lot!</strong> 
         </div>
         <div id="finish" class="alert alert-success" style="display:none;">
             <strong id="i18n_congratulations">Congratulations!</strong> <span id="i18n_congratulations_text">You have participated in all available tasks!</span>
@@ -87,7 +87,7 @@
         <!-- DataList to save  -->
         <form id='dataList' name='dataList'>
           
-          <input type='button'   onClick="removeOptions()"; value='Remove Selected'><br>
+          <input type='button' onClick="removeOptions()"; value='Remove Selected'><br>
           <span class="label label-info" >XY</span>&nbsp;<input type='text' name='xyValues' style="width:150px">
           <span class="label label-info" >Lon, Lat</span>&nbsp;<input type='text' name='lonlatValues' style="width:150px"><br><br>
           <span class="label label-info" id="i18n_viirs">2012 Night View from NPP-VIIRS</span>
@@ -330,11 +330,7 @@ var iconStyleVIIRS = new ol.style.Style({
   image: new ol.style.Circle({
       radius: 5,
       fill: new ol.style.Fill({
-          color: [255, 0, 0, 1]
-      }),
-      stroke: new ol.style.Stroke({
-          color: [255, 0, 0, 1],
-          width: 1.5
+          color: [0, 204, 0, 1]
       })
   }),
   zIndex: 1
@@ -477,7 +473,7 @@ var osmlayer = new OpenLayers.Layer.OSM();
 var gmaplayerSt = new OpenLayers.Layer.Google("Google Streets",{numZoomLevels: 20});
 var gmaplayerSat = new OpenLayers.Layer.Google("Google Satellite",{type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22});
 
-var fromProjection = new OpenLayers.Projection("EPSG:4326");   
+var fromProjection = new OpenLayers.Projection("EPSG:4326");
 var toProjection   = new OpenLayers.Projection("EPSG:900913");
 
 function loadOSM(lonOSM, latOSM, zoomOSM){
@@ -486,8 +482,21 @@ function loadOSM(lonOSM, latOSM, zoomOSM){
          projection: "EPSG:4326"
     });
 
-    mapOSM.addLayers([gmaplayerSt,gmaplayerSat,osmlayer]);
-    
+// create point in OSM map with task coordinates
+    var locationPointLayer = new OpenLayers.Layer.Vector('Location', {
+            styleMap: new OpenLayers.StyleMap({
+                pointRadius: "5", 
+                fillColor: "#00cc00",
+                strokeWidth: "0"
+            }),
+            renderers: renderer
+        });
+    var point = new OpenLayers.Geometry.Point(eval(lonOSM),eval(latOSM));
+    point.transform(fromProjection, toProjection);
+    var featureP = new OpenLayers.Feature.Vector(point);
+    locationPointLayer.addFeatures([featureP]);
+
+    mapOSM.addLayers([gmaplayerSt,gmaplayerSat,osmlayer, locationPointLayer]);
     mapOSM.addControl(new OpenLayers.Control.LayerSwitcher());
 
     var centerPosition = new OpenLayers.LonLat(eval(lonOSM),eval(latOSM)).transform( fromProjection, toProjection);
@@ -527,6 +536,14 @@ function changeMapOSM(lonOSM, latOSM, zoomOSM){
   var centerPosition = new OpenLayers.LonLat(eval(lonOSM),eval(latOSM)).transform( fromProjection, toProjection);
   mapOSM.setCenter(centerPosition, zoomOSM );
 
+// update point with lat and lon values
+  var locationPointLayer = mapOSM.getLayersByName('Location')[0];
+  locationPointLayer.removeAllFeatures();
+  var point = new OpenLayers.Geometry.Point(eval(lonOSM),eval(latOSM));
+  point.transform(fromProjection, toProjection);
+  var featureP = new OpenLayers.Feature.Vector(point);
+  locationPointLayer.addFeatures([featureP]);
+
   // change VIIRS
   mapVIIRS.removeLayer(nadirLayer);
   var icons = [];
@@ -553,14 +570,14 @@ function addPointLayer(){
 
     iconFeature = new ol.Feature({ geometry: new ol.geom.Point([eval(pos[0]), eval(pos[1])])});
     iconFeature.setStyle(iconStyle);
-    icons.push(iconFeature);    
+    icons.push(iconFeature);
 
   }
-    
+
   pointLayer = new ol.layer.Vector({ 
     source: new ol.source.Vector({ features: icons }) 
   })
-  
+
   map.addLayer(pointLayer);
 
 }
@@ -576,6 +593,7 @@ var pointLayerOSM = new OpenLayers.Layer.Vector('Points', {
         }),
         renderers: renderer
     });
+
 function addPointLayerOSM(){
 
   //window.mapOSM.removeLayer(pointLayerOSM);
@@ -714,8 +732,7 @@ var messages = {"en": {
                         "i18n_welldone": "Well done!",
                         "i18n_welldone_text": "Your answer has been saved",
                         "i18n_loading_next_task": "Loading next task...",
-                        "i18n_task_completed": "The task has been completed!",
-                        "i18n_thanks": "Thanks a lot!",
+                        "i18n_task_completed": "The task has been completed! Thanks a lot!",
                         "i18n_congratulations": "Congratulations",
                         "i18n_congratulations_text": "You have participated in all available tasks!",
                         "i18n_no_photo": "No photo",
@@ -742,8 +759,7 @@ var messages = {"en": {
                         "i18n_welldone": "Bien hecho!",
                         "i18n_welldone_text": "Tu respuesta ha sido guardada",
                         "i18n_loading_next_task": "Cargando la siguiente tarea...",
-                        "i18n_task_completed": "La tarea ha sido completadas!",
-                        "i18n_thanks": "Muchísimas gracias!",
+                        "i18n_task_completed": "La tarea ha sido completadas! Muchísimas gracias",
                         "i18n_congratulations": "Enhorabuena",
                         "i18n_congratulations_text": "Has participado en todas las tareas disponibles!",
                         "i18n_no_photo": "No hay foto",
@@ -762,7 +778,7 @@ var messages = {"en": {
                         "i18n_none":"Ninguna",
                         "i18n_few":"Menos de 50%",
                         "i18n_more":"Más de 50%",
-                        "i18n_zoom":"Usa  [+] y [-] para agrandar and empequeñecer. Presiona Mayusculas + boton izquierdo del ratón mientras mueves el ratón para rotar la imagén.",
+                        "i18n_zoom":"Usa  [+] y [-] para agrandar y empequeñecer. Presiona Mayúsculas + botón izquierdo del ratón mientras mueves el ratón para rotar la imagen.",
                         "i18n_viirs":"Imagen nocturna de SNPP-VIIRS (2012)"
                      },      
 };
