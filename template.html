@@ -64,9 +64,9 @@
         <h1 id="question">Do you know about this City?</h1> <!-- The question will be loaded here -->
         <div id="step1" class="btn-group" style="text-align:center"> <!-- Start DIV for the submission buttons -->
             <div id="answer" class="btn-group" style="text-align:center"> <!-- Start DIV for the submission buttons -->
-                <button class="btn btn-large btn-answer" value='save'>Save</button>
-                <button class="btn btn-large btn-answer" value='404'>No photo</button>
-                <button class="btn btn-large btn-answer" value='unknown'>I don't know</button>
+                <button class="btn btn-large btn-answer" value='save'><span id="i18n_save">Save</span></button>
+                <button class="btn btn-large btn-answer" value='404'><span id="i18n_nophoto">No photo</span></button>
+                <button class="btn btn-large btn-answer" value='unknown'><span id="i18n_dontknow">I don't know</span></button>
                 
             </div><!-- End of DIV for the submission buttons -->
 
@@ -75,9 +75,9 @@
         <!-- Link to picture data provided by NASA site -->
         <div>
           <form id='imageQuality' name = 'imageQuality'>
-      <span class="label label-danger">Please, be patient with large ISS images</span><span class="label label-info">&nbsp;&nbsp;Image Sharp: Good<input type='radio' name='sharp' value='good'>&nbsp;Medium<input type='radio' name='sharp' value='medium'>&nbsp;Poor<input type='radio' name='sharp' value='poor'>
-      &nbsp;&nbsp;Cludy: None<input type='radio' name='cloud' value='none'>&nbsp;Less than 50%<input type='radio' name='cloud' value='l50'>&nbsp;More than 50%<input type='radio' name='cloud' value='m56'><br></span></form>
-      <br>          Use the [+] and [-] buttons to Zoom In and Zoom Out. Keep Shift + Left mouse button pressed while moving the mouse will rotate the image.<br><a id="hrefPicture" href='' target='_blank'>ISS picture data - Earth Science and Remote Sensing Unit, NASA-Johnson Space Center. "The Gateway to Astronaut Photography of Earth."</a></div>
+      <span class="label label-danger" id="i18n_wait">Please, be patient with large ISS images</span><span class="label label-info">&nbsp;&nbsp;<span id="i18n_imagesharp">Image Sharp:</span> <span id="i18n_good">Good</span><input type='radio' name='sharp' value='good'>&nbsp;<span id="i18n_medium">Medium</span><input type='radio' name='sharp' value='medium'>&nbsp;<span id="i18n_poor">Poor</span><input type='radio' name='sharp' value='poor'>
+      &nbsp;&nbsp;<span id="i18n_cloudy">Cloudy</span>: <span id="i18n_none">None</span><input type='radio' name='cloud' value='none'>&nbsp;<span id="i18n_few">Less than 50%</span><input type='radio' name='cloud' value='l50'>&nbsp;<span id="i18n_more">More than 50%</span><input type='radio' name='cloud' value='m56'><br></span></form>
+      <br>          <span id="i18n_zoom">Use the [+] and [-] buttons to Zoom In and Zoom Out. Keep Shift + Left mouse button pressed while moving the mouse will rotate the image.</span><br><a id="hrefPicture" href='' target='_blank'>ISS picture data - Earth Science and Remote Sensing Unit, NASA-Johnson Space Center. "The Gateway to Astronaut Photography of Earth."</a></div>
 
 
         <!-- These are maps -->
@@ -90,7 +90,7 @@
           <input type='button'   onClick="removeOptions()"; value='Remove Selected'><br>
           <span class="label label-info" >XY</span>&nbsp;<input type='text' name='xyValues' style="width:150px">
           <span class="label label-info" >Lon, Lat</span>&nbsp;<input type='text' name='lonlatValues' style="width:150px"><br><br>
-          <span class="label label-info">2012 Night View from NPP-VIIRS</span>
+          <span class="label label-info" id="i18n_viirs">2012 Night View from NPP-VIIRS</span>
           <div id="mapVIIRS" class="mapVIIRS"></div>
         </form>
     </div><!-- End of DIV for the submission buttons -->
@@ -133,8 +133,8 @@
 
 <div class="row skeleton" style="margin-top:15px;"> <!-- Start Skeleton Row-->
     <div class="span8 offset2"><!-- Start of Question and Submission DIV (column) -->
-        <p>You are working now on task: <span id="task-id" class="label label-warning">#</span></p>
-        <p>You have completed: <span id="done" class="label label-info"></span> tasks from
+        <p><span id="i18n_working_task">You are working now on task:</span> <span id="task-id" class="label label-warning">#</span></p>
+        <p><span id="i18n_tasks_completed">You have completed:</span> <span id="done" class="label label-info"></span> <span id="i18n_tasks_from">tasks from</span>
         <!-- Progress bar for the user -->
         <span id="total" class="label label-info"></span></p>
         <div class="progress progress-striped">
@@ -705,3 +705,10 @@ pybossa.run('LostAtNight');
 
 </script>
 
+
+<script>
+// Default language
+var userLocale = "en";
+// Translations
+var messages = {"en": {}}
+</script>
