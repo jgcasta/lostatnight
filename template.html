@@ -223,7 +223,8 @@ pybossa.presentTask(function(task, deferred) {
   if ( !$.isEmptyObject(task) ) {
 
     loadUserProgress();
-
+    $("#hrefPicture").attr("href",task.info.linkData);
+    $("#fb-like").attr("data-href",task.info.linkData);
         // first time I load the whole map
         if (firstTime){
           loadOSM(task.info.citylon,task.info.citylat,7);
@@ -244,10 +245,8 @@ pybossa.presentTask(function(task, deferred) {
         $("#question").html(task.info.question);
         $('#task-id').html(task.id);
         $('.btn-answer').off('click').on('click', function(evt) {
-          $("#hrefPicture").attr("href",task.info.linkData);
-          $("#fb-like").attr("data-href",task.info.linkData);
 
-          var answer = $(evt.target).attr("value");
+          var answer = $(this).attr("value");
 
           if (typeof answer != 'undefined') {
 
@@ -742,7 +741,6 @@ var messages = {"en": {
                         "i18n_tasks_from": " tasks from ",
                         "i18n_quiestion":"Do you know about this City?",
                         "i18n_save":"Save",
-                        "i18n_dontknow":"I don't know",
                         "i18n_wait":"Please, be patient with large ISS images",
                         "i18n_imagesharp":"Image Sharp:",
                         "i18n_good":"Good",
