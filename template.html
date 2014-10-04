@@ -247,7 +247,7 @@ pybossa.presentTask(function(task, deferred) {
           $("#hrefPicture").attr("href",task.info.linkData);
           $("#fb-like").attr("data-href",task.info.linkData);
 
-          var answer = $(evt.target).attr("value");
+          var answer = $(this).attr("value");
 
           if (typeof answer != 'undefined') {
 
@@ -742,7 +742,6 @@ var messages = {"en": {
                         "i18n_tasks_from": " tasks from ",
                         "i18n_quiestion":"Do you know about this City?",
                         "i18n_save":"Save",
-                        "i18n_dontknow":"I don't know",
                         "i18n_wait":"Please, be patient with large ISS images",
                         "i18n_imagesharp":"Image Sharp:",
                         "i18n_good":"Good",
