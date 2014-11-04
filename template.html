@@ -75,7 +75,7 @@
         <!-- Link to picture data provided by NASA site -->
         <div>
           <form id='imageQuality' name = 'imageQuality'>
-      <span class="label label-danger" id="i18n_wait">Please, be patient with large ISS images</span><span class="label label-info">&nbsp;&nbsp;<span id="i18n_imagesharp">Image Sharp:</span> <span id="i18n_good">Good</span><input type='radio' name='sharp' value='good'>&nbsp;<span id="i18n_medium">Medium</span><input type='radio' name='sharp' value='medium'>&nbsp;<span id="i18n_poor">Poor</span><input type='radio' name='sharp' value='poor'>
+      <span class="label label-danger" id="i18n_wait">Please, be patient with large ISS images</span><span class="label label-info">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="i18n_imagesharp">Image Sharpness:</span> <span id="i18n_good">Good</span><input type='radio' name='sharp' value='good'>&nbsp;<span id="i18n_medium">Medium</span><input type='radio' name='sharp' value='medium'>&nbsp;<span id="i18n_poor">Poor</span><input type='radio' name='sharp' value='poor'>
       &nbsp;&nbsp;<span id="i18n_cloudy">Cloudy</span>: <span id="i18n_none">None</span><input type='radio' name='cloud' value='none'>&nbsp;<span id="i18n_few">Less than 50%</span><input type='radio' name='cloud' value='l50'>&nbsp;<span id="i18n_more">More than 50%</span><input type='radio' name='cloud' value='m56'><br></span></form>
       <br>          <span id="i18n_zoom">Green point indicates ISS location at picture time. Use the [+] and [-] buttons to Zoom In and Zoom Out. Keep Shift + Left mouse button pressed while moving the mouse will rotate the image.</span><br><a id="hrefPicture" href='' target='_blank'>ISS picture data - Earth Science and Remote Sensing Unit, NASA-Johnson Space Center. "The Gateway to Astronaut Photography of Earth."</a></div>
 
@@ -258,8 +258,8 @@ pybossa.presentTask(function(task, deferred) {
                 task.answer.LONLAT = document.dataList.lonlatValues.value;
                 xy = '';
                 lonlat = '';
-                //task.answer.sharp = readSharp();
-                //task.answer.cloud = readCloud();
+                task.answer.sharp = readSharp();
+                task.answer.cloud = readCloud();
                 //task.answer.rotationAngle = getRotationAngle();
                 $("#success").show();
 
@@ -678,14 +678,15 @@ function removeOptions(){
 function removeAllOptions(){
 
     removePoint();
-
+    $('input[name=sharp]').attr('checked',false);
+    $('input[name=cloud]').attr('checked',false);
     dataList.xyValues.value = '';
     dataList.lonlatValues.value = '';
 }
 
 function readSharp(){
   var sharp = document.imageQuality.sharp;
-
+  var retornar = "";
   var i;
   for (i=0;i<sharp.length;i++) {
     if (sharp[i].checked) {
@@ -697,7 +698,7 @@ function readSharp(){
 
 function readCloud(){
   var cloud = document.imageQuality.cloud;
-
+  var retornar = "";
   var i;
   for (i=0;i<cloud.length;i++) {
     if (cloud[i].checked) {
@@ -742,7 +743,7 @@ var messages = {"en": {
                         "i18n_quiestion":"Do you know about this City?",
                         "i18n_save":"Save",
                         "i18n_wait":"Please, be patient with large ISS images",
-                        "i18n_imagesharp":"Image Sharp:",
+                        "i18n_imagesharp":"Image Sharpness:",
                         "i18n_good":"Good",
                         "i18n_medium":"Medium",
                         "i18n_poor":"Poor",
