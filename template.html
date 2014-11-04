@@ -260,7 +260,7 @@ pybossa.presentTask(function(task, deferred) {
                 lonlat = '';
                 task.answer.sharp = readSharp();
                 task.answer.cloud = readCloud();
-                //task.answer.rotationAngle = getRotationAngle();
+                task.answer.rotationAngle = getRotationAngle();
                 
                 // Prueba para controlar el array de puntos y localización
                 if (verifyPoints()){
@@ -418,7 +418,7 @@ function loadISSImage(urlImage){
 } // loadISSImage
 
 function getRotationAngle(){
-  var currentRadians = map.getView().getView().getRotation();
+  var currentRadians = map.getView().getRotation();
   return currentRadians;
 }
 
@@ -710,9 +710,9 @@ function readCloud(){
 
 function verifyPoints(){
   var countXY = 0;
-  if (document.dataList.xyValues.textLength > 0) { countXY = 1; }
+  if (document.dataList.xyValues.value.length > 0) { countXY = 1; }
   var countLONLAT = 0;
-  if (document.dataList.lonlatValues.textLength > 0) { countLONLAT = 1; }
+  if (document.dataList.lonlatValues.value.length > 0) { countLONLAT = 1; }
   var devolver = true;
   if (countXY != countLONLAT){
     alert('Both an XY point and a LONLAT must be present');
