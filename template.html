@@ -261,18 +261,18 @@ pybossa.presentTask(function(task, deferred) {
                 task.answer.sharp = readSharp();
                 task.answer.cloud = readCloud();
                 //task.answer.rotationAngle = getRotationAngle();
-                $("#success").show();
-
-                // pybossa.saveTask(task.id, task.answer).done(function() {
-                //   deferred.resolve();
-                // });
-
-                $("#step1").show();
-
-                pybossa.saveTask(task.id, task.answer).done(function() {
-                  deferred.resolve();
-                });
-                $("#success").hide();
+                
+                // Prueba para controlar el array de puntos y localización
+                if (verifyPoints()){
+                  $("#step1").show();
+                  $("#success").show();
+                  pybossa.saveTask(task.id, task.answer).done(function() {
+                    deferred.resolve();
+                  });
+                  $("#success").hide();
+                }else {
+                  $("#step1").show();
+                }
 
               }else if (answer == '404'){
                 task.answer.imageResult = '404';
@@ -280,7 +280,7 @@ pybossa.presentTask(function(task, deferred) {
                   deferred.resolve();
                 });  
 
-                }else {
+              }else {
 
                 task.answer.imageResult = 'unknown';
                 pybossa.saveTask(task.id, task.answer).done(function() {
@@ -706,6 +706,22 @@ function readCloud(){
     }
   }
   return retornar
+}
+
+function verifyPoints(){
+  var countXY = 0;
+  if (document.dataList.xyValues.textLength > 0) { countXY = 1; }
+  var countLONLAT = 0;
+  if (document.dataList.lonlatValues.textLength > 0) { countLONLAT = 1; }
+  var devolver = true;
+  if (countXY != countLONLAT){
+    alert('Both an XY point and a LONLAT must be present');
+    devolver = false;
+  } else if (countXY == 0){
+    alert('Please enter both an XY point and a LONLAT');
+  devolver = false;
+  }
+  return devolver;
 }
 
 pybossa.run('LostAtNight');
