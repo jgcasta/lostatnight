@@ -722,10 +722,10 @@ function verifyPoints(){
   if (document.dataList.lonlatValues.value.length > 0) { countLONLAT = 1; }
   var devolver = true;
   if (countXY != countLONLAT){
-    alert('Both an XY point and a LONLAT must be present');
+    alert(i18n_alertMessage(1));
     devolver = false;
   } else if (countXY == 0){
-    alert('Please enter both an XY point and a LONLAT');
+    alert(i18n_alertMessage(2));
   devolver = false;
   }
   return devolver;
@@ -804,6 +804,15 @@ var messages = {"en": {
                         "i18n_viirs":"Imagen nocturna de SNPP-VIIRS (2012)"
                      },      
 };
+var alertMessages = {"en":  {
+                              1: "Both an XY point and a LONLAT must be present",
+                              2: "Please enter both an XY point and a LONLAT"
+                            },
+                      "es": {
+                              1: "Tanto el punto XY y una LONLAT debe estar presente",
+                              2: "Por favor, ingrese la vez un punto XY y una LONLAT"
+                            },
+};
 // Update userLocale with server side information
 $(document).ready(function(){
     userLocale = document.getElementById('PYBOSSA_USER_LOCALE').textContent.trim();
@@ -816,5 +825,9 @@ function i18n_translate() {
         console.log("Translating: " + ids[i]);
         document.getElementById(ids[i]).innerHTML = messages[userLocale][ids[i]];
     }
+}
+
+function i18n_alertMessage(msgNumber) {
+  return alertMessages[userLocale][msgNumber];
 }
 </script>
