@@ -441,8 +441,11 @@ function loadNewISSImage(urlImage){
     dimX = dim[0];
     dimY = dim[1];
   
+    map.getView().setRotation(0);
+    map.getView().setZoom(1);
     map.removeLayer(ISSlayer);
     createISSLayer(urlImage, dimX, dimY); 
+    map.getView().setCenter([dimX/2, dimY/2]);
     map.addLayer(ISSlayer);
     $('#map').show();
 
@@ -546,6 +549,8 @@ function changeMapOSM(lonOSM, latOSM, zoomOSM){
   locationPointLayer.addFeatures([featureP]);
 
   // change VIIRS
+  mapVIIRS.getView().setZoom(1);
+  mapVIIRS.getView().setCenter([0,0]);
   mapVIIRS.removeLayer(nadirLayer);
   var icons = [];
   nadirISS = new ol.Feature({ geometry: new ol.geom.Point([eval(lonOSM),eval(latOSM)])});
