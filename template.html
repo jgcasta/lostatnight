@@ -91,6 +91,7 @@
           <span class="label label-info" >XY</span>&nbsp;<input type='text' name='xyValues' style="width:150px">
           <span class="label label-info" >Lon, Lat</span>&nbsp;<input type='text' name='lonlatValues' style="width:150px"><br><br>
           <span class="label label-info" id="i18n_viirs">2012 Night View from NPP-VIIRS</span>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-info" id="iss_latlon">ISS Lat,Lon=</span>
           <div id="mapVIIRS" class="mapVIIRS"></div>
         </form>
     </div><!-- End of DIV for the submission buttons -->
@@ -241,7 +242,8 @@ pybossa.presentTask(function(task, deferred) {
           }
           loadNewISSImage(task.info.link_big);
         }
-
+        document.getElementById("iss_latlon").innerHTML = "ISS Lat,Lon=" + eval(task.info.citylat).toFixed(5) + "," + eval(task.info.citylon).toFixed(5);
+        
         $("#question").html(task.info.question);
         $('#task-id').html(task.id);
         $('.btn-answer').off('click').on('click', function(evt) {
