@@ -667,7 +667,7 @@ function removeOptions(){
     var xyDeleted = false;
 
     window.map.removeLayer(pointLayer);
-    window.mapOSM.removeLayer(pointLayerOSM);
+    if (pointLayerOSM.features.count > 0){ window.mapOSM.removeLayer(pointLayerOSM); }
     dataList.xyValues.value = '';
     dataList.lonlatValues.value = '';
     xyDeleted = true;
