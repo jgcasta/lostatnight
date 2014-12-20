@@ -75,9 +75,11 @@
         <!-- Link to picture data provided by NASA site -->
         <div>
           <form id='imageQuality' name = 'imageQuality'>
-      <span class="label label-danger" id="i18n_wait">Please, be patient with large ISS images</span><span class="label label-info">&nbsp;&nbsp;<span id="i18n_imagesharp">Image Sharp:</span> <span id="i18n_good">Good</span><input type='radio' name='sharp' value='good'>&nbsp;<span id="i18n_medium">Medium</span><input type='radio' name='sharp' value='medium'>&nbsp;<span id="i18n_poor">Poor</span><input type='radio' name='sharp' value='poor'>
-      &nbsp;&nbsp;<span id="i18n_cloudy">Cloudy</span>: <span id="i18n_none">None</span><input type='radio' name='cloud' value='none'>&nbsp;<span id="i18n_few">Less than 50%</span><input type='radio' name='cloud' value='l50'>&nbsp;<span id="i18n_more">More than 50%</span><input type='radio' name='cloud' value='m56'><br></span></form>
-      <br>          <span id="i18n_zoom">Green point indicates ISS location at picture time. Use the [+] and [-] buttons to Zoom In and Zoom Out. Keep Shift + Left mouse button pressed while moving the mouse will rotate the image.</span><br><a id="hrefPicture" href='' target='_blank'>ISS picture data - Earth Science and Remote Sensing Unit, NASA-Johnson Space Center. "The Gateway to Astronaut Photography of Earth."</a></div>
+      <span class="label label-danger" id="i18n_wait">Please, be patient with large ISS images</span><span class="label label-info">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="i18n_imagesharp">Image Sharpness:</span> <span id="i18n_good">Good</span><input type='radio' name='sharp' value='good'>&nbsp;<span id="i18n_medium">Medium</span><input type='radio' name='sharp' value='medium'>&nbsp;<span id="i18n_poor">Poor</span><input type='radio' name='sharp' value='poor'>
+      &nbsp;&nbsp;<span id="i18n_cloudy">Cloudy</span>: <span id="i18n_none">None</span><input type='radio' name='cloud' value='none'>&nbsp;<span id="i18n_few">Less than 50%</span><input type='radio' name='cloud' value='l50'>&nbsp;<span id="i18n_more">More than 50%</span><input type='radio' name='cloud' value='m56'><br></span></form><br>
+      <span id="i18n_zoom">Green point indicates ISS location at picture time. Use the [+] and [-] buttons to Zoom In and Zoom Out. Keep Shift + Left mouse button pressed while moving the mouse will rotate the image.</span><br>
+      <span id="i18n_doNotGuess">Please do not just guess at a location; that wastes time when verifying results. Please only place a mark if you are absolutely sure that its location is accurate and can be later geo-referenced point-by-point, else press the I-Don't-Know button.</span><br>
+      <a id="hrefPicture" href='' target='_blank'>ISS picture data - Earth Science and Remote Sensing Unit, NASA-Johnson Space Center. "The Gateway to Astronaut Photography of Earth."</a></div>
 
 
         <!-- These are maps -->
@@ -91,6 +93,7 @@
           <span class="label label-info" >XY</span>&nbsp;<input type='text' name='xyValues' style="width:150px">
           <span class="label label-info" >Lon, Lat</span>&nbsp;<input type='text' name='lonlatValues' style="width:150px"><br><br>
           <span class="label label-info" id="i18n_viirs">2012 Night View from NPP-VIIRS</span>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-info" id="iss_latlon">ISS Lat,Lon=</span>
           <div id="mapVIIRS" class="mapVIIRS"></div>
         </form>
     </div><!-- End of DIV for the submission buttons -->
@@ -241,7 +244,8 @@ pybossa.presentTask(function(task, deferred) {
           }
           loadNewISSImage(task.info.link_big.replace('sseop/images','DatabaseImages'));
         }
-
+        document.getElementById("iss_latlon").innerHTML = "ISS Lat,Lon=" + eval(task.info.citylat).toFixed(5) + "," + eval(task.info.citylon).toFixed(5);
+        
         $("#question").html(task.info.question);
         $('#task-id').html(task.id);
         $('.btn-answer').off('click').on('click', function(evt) {
@@ -258,21 +262,21 @@ pybossa.presentTask(function(task, deferred) {
                 task.answer.LONLAT = document.dataList.lonlatValues.value;
                 xy = '';
                 lonlat = '';
-                //task.answer.sharp = readSharp();
-                //task.answer.cloud = readCloud();
-                //task.answer.rotationAngle = getRotationAngle();
-                $("#success").show();
-
-                // pybossa.saveTask(task.id, task.answer).done(function() {
-                //   deferred.resolve();
-                // });
-
-                $("#step1").show();
-
-                pybossa.saveTask(task.id, task.answer).done(function() {
-                  deferred.resolve();
-                });
-                $("#success").hide();
+                task.answer.sharp = readSharp();
+                task.answer.cloud = readCloud();
+                task.answer.rotationAngle = getRotationAngle();
+                
+                // Prueba para controlar el array de puntos y localización
+                if (verifyPoints()){
+                  $("#step1").show();
+                  $("#success").show();
+                  pybossa.saveTask(task.id, task.answer).done(function() {
+                    deferred.resolve();
+                  });
+                  $("#success").hide();
+                }else {
+                  $("#step1").show();
+                }
 
               }else if (answer == '404'){
                 task.answer.imageResult = '404';
@@ -280,7 +284,7 @@ pybossa.presentTask(function(task, deferred) {
                   deferred.resolve();
                 });  
 
-                }else {
+              }else {
 
                 task.answer.imageResult = 'unknown';
                 pybossa.saveTask(task.id, task.answer).done(function() {
@@ -418,7 +422,7 @@ function loadISSImage(urlImage){
 } // loadISSImage
 
 function getRotationAngle(){
-  var currentRadians = map.getView().getView().getRotation();
+  var currentRadians = map.getView().getRotation();
   return currentRadians;
 }
 
@@ -439,8 +443,11 @@ function loadNewISSImage(urlImage){
     dimX = dim[0];
     dimY = dim[1];
   
+    map.getView().setRotation(0);
+    map.getView().setZoom(1);
     map.removeLayer(ISSlayer);
     createISSLayer(urlImage, dimX, dimY); 
+    map.getView().setCenter([dimX/2, dimY/2]);
     map.addLayer(ISSlayer);
     $('#map').show();
 
@@ -592,6 +599,8 @@ function changeMapOSM(lonOSM, latOSM, zoomOSM){
   locationPointLayer.addFeatures([featureP]);
 
   // change VIIRS
+  mapVIIRS.getView().setZoom(1);
+  mapVIIRS.getView().setCenter([0,0]);
   mapVIIRS.removeLayer(nadirLayer);
   var icons = [];
   nadirISS = new ol.Feature({ geometry: new ol.geom.Point([eval(lonOSM),eval(latOSM)])});
@@ -715,7 +724,7 @@ function removeOptions(){
     var xyDeleted = false;
 
     window.map.removeLayer(pointLayer);
-    window.mapOSM.removeLayer(pointLayerOSM);
+    if (pointLayerOSM.features.count > 0){ window.mapOSM.removeLayer(pointLayerOSM); }
     dataList.xyValues.value = '';
     dataList.lonlatValues.value = '';
     xyDeleted = true;
@@ -726,14 +735,15 @@ function removeOptions(){
 function removeAllOptions(){
 
     removePoint();
-
+    $('input[name=sharp]').attr('checked',false);
+    $('input[name=cloud]').attr('checked',false);
     dataList.xyValues.value = '';
     dataList.lonlatValues.value = '';
 }
 
 function readSharp(){
   var sharp = document.imageQuality.sharp;
-
+  var retornar = "";
   var i;
   for (i=0;i<sharp.length;i++) {
     if (sharp[i].checked) {
@@ -745,7 +755,7 @@ function readSharp(){
 
 function readCloud(){
   var cloud = document.imageQuality.cloud;
-
+  var retornar = "";
   var i;
   for (i=0;i<cloud.length;i++) {
     if (cloud[i].checked) {
@@ -753,6 +763,22 @@ function readCloud(){
     }
   }
   return retornar
+}
+
+function verifyPoints(){
+  var countXY = 0;
+  if (document.dataList.xyValues.value.length > 0) { countXY = 1; }
+  var countLONLAT = 0;
+  if (document.dataList.lonlatValues.value.length > 0) { countLONLAT = 1; }
+  var devolver = true;
+  if (countXY != countLONLAT){
+    alert(i18n_alertMessage(1));
+    devolver = false;
+  } else if (countXY == 0){
+    alert(i18n_alertMessage(2));
+  devolver = false;
+  }
+  return devolver;
 }
 
 pybossa.run('LostAtNight');
@@ -790,7 +816,7 @@ var messages = {"en": {
                         "i18n_quiestion":"Do you know about this City?",
                         "i18n_save":"Save",
                         "i18n_wait":"Please, be patient with large ISS images",
-                        "i18n_imagesharp":"Image Sharp:",
+                        "i18n_imagesharp":"Image Sharpness:",
                         "i18n_good":"Good",
                         "i18n_medium":"Medium",
                         "i18n_poor":"Poor",
@@ -798,7 +824,8 @@ var messages = {"en": {
                         "i18n_none":"None",
                         "i18n_few":"Less than 50%",
                         "i18n_more":"More than 50%",
-                        "i18n_zoom":"Use the [+] and [-] buttons to Zoom In and Zoom Out. Keep Shift + Left mouse button pressed while moving the mouse will rotate the image.",
+                        "i18n_zoom":"Green point indicates ISS location at picture time. Use the [+] and [-] buttons to Zoom In and Zoom Out. Keep Shift + Left mouse button pressed while moving the mouse will rotate the image.",
+                        "i18n_doNotGuess":"Please do not just guess at a location; that wastes time when verifying results. Please only place a mark if you are absolutely sure that its location is accurate and can be later geo-referenced point-by-point, else press the I-Don't-Know button.",
                         "i18n_viirs":"2012 Night View from SNPP-VIIRS"
                      },
                       "es": {
@@ -824,9 +851,19 @@ var messages = {"en": {
                         "i18n_none":"Ninguna",
                         "i18n_few":"Menos de 50%",
                         "i18n_more":"Más de 50%",
-                        "i18n_zoom":"Usa  [+] y [-] para agrandar y empequeñecer. Presiona Mayúsculas + botón izquierdo del ratón mientras mueves el ratón para rotar la imagen.",
+                        "i18n_zoom":"Punto verde indica la ubicación de la ISS en el momento de la foto. Usa  [+] y [-] para agrandar y empequeñecer. Presiona Mayúsculas + botón izquierdo del ratón mientras mueves el ratón para rotar la imagen.",
+                        "i18n_doNotGuess":"Por favor, no acaba de adivinar en un lugar; que hace perder tiempo al verificar los resultados. Por favor solo colocar una marca si está absolutamente seguro de que su ubicación es exacta y puede ser posterior georreferenciada punto por punto; o bien presione el botón No-Lo-Sé.",
                         "i18n_viirs":"Imagen nocturna de SNPP-VIIRS (2012)"
                      },      
+};
+var alertMessages = {"en":  {
+                              1: "Both an XY point and a LONLAT must be present",
+                              2: "Please enter both an XY point and a LONLAT"
+                            },
+                      "es": {
+                              1: "Tanto el punto XY y una LONLAT debe estar presente",
+                              2: "Por favor, ingrese la vez un punto XY y una LONLAT"
+                            },
 };
 // Update userLocale with server side information
 $(document).ready(function(){
@@ -840,5 +877,9 @@ function i18n_translate() {
         console.log("Translating: " + ids[i]);
         document.getElementById(ids[i]).innerHTML = messages[userLocale][ids[i]];
     }
+}
+
+function i18n_alertMessage(msgNumber) {
+  return alertMessages[userLocale][msgNumber];
 }
 </script>
