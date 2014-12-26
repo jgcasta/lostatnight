@@ -559,7 +559,7 @@ function loadOSM(lonOSM, latOSM, zoomOSM){
     nadirLayer = new ol.layer.Vector({ source: new ol.source.Vector({ features: icons }) });
   
     mapVIIRS.addLayer(nadirLayer);
-    updateMapVIIRS(eval(lonOSM),eval(latOSM),1);
+    updateMapVIIRS(eval(lonOSM),eval(latOSM),2);
 
 } // loadOSM
 
@@ -623,8 +623,8 @@ function changeMapOSM(lonOSM, latOSM, zoomOSM){
 
 
 function updateMapVIIRS(lonOSM, latOSM, zoomOSM){
-
-  mapVIIRS.getView().setZoom(zoomOSM);
+  
+  mapVIIRS.getView().setZoom(zoomOSM - 1);
   mapVIIRS.getView().setCenter([eval(lonOSM),eval(latOSM)]);
 
 }
