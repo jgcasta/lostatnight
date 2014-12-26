@@ -1,4 +1,4 @@
-  <link href="http://www.iderail.es/testiss/css/ol.css" rel="stylesheet">
+    <link href="http://www.iderail.es/testiss/css/ol.css" rel="stylesheet">
   <style type="text/css">
   .map {
     float: left;
@@ -473,6 +473,11 @@ function handleMapClick(evt) {
       }
     } 
 
+function handleMapMoveStart(evt){
+  
+  var lonlat = mapOSM.getCenter().transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326"));
+  updateMapVIIRS(lonlat.lon.toFixed(6), lonlat.lat.toFixed(6), mapOSM.getZoom());
+}
 
 var mapOSM;
 var osmlayer = new OpenLayers.Layer.OSM();
@@ -489,7 +494,7 @@ function loadOSM(lonOSM, latOSM, zoomOSM){
     });
 
 // create point in OSM map with task coordinates
-    var locationPointLayer = new OpenLayers.Layer.Vector('ISS Location', {
+    var locationPointLayer = new OpenLayers.Layer.Vector('Location', {
             styleMap: new OpenLayers.StyleMap({
                 pointRadius: "5", 
                 fillColor: "#00cc00",
@@ -509,6 +514,7 @@ function loadOSM(lonOSM, latOSM, zoomOSM){
     mapOSM.setCenter(centerPosition, zoomOSM );
 
     mapOSM.events.register('click', mapOSM, handleMapClick);
+    mapOSM.events.register('moveend', mapOSM, handleMapMoveStart);    
 
     // visible circle 500 km
     var styleCircle = new OpenLayers.StyleMap({
@@ -553,6 +559,7 @@ function loadOSM(lonOSM, latOSM, zoomOSM){
     nadirLayer = new ol.layer.Vector({ source: new ol.source.Vector({ features: icons }) });
   
     mapVIIRS.addLayer(nadirLayer);
+    updateMapVIIRS(eval(lonOSM),eval(latOSM),1);
 
 } // loadOSM
 
@@ -563,7 +570,7 @@ OpenLayers.Geometry.Polygon.createGeodesicPolygon = function(origin, radius, sid
         origin.transform(projection, new OpenLayers.Projection("EPSG:4326"));
     }
     var latlon = new OpenLayers.LonLat(origin.x, origin.y);
-    console.log(origin.x + ' ' +  origin.y);
+    //console.log(origin.x + ' ' +  origin.y);
 
     var angle;
     var new_lonlat, geom_point;
@@ -574,7 +581,7 @@ OpenLayers.Geometry.Polygon.createGeodesicPolygon = function(origin, radius, sid
         new_lonlat = OpenLayers.Util.destinationVincenty(latlon, angle, radius);
         //new_lonlat.transform(new OpenLayers.Projection("EPSG:4326"), toProjection);
         geom_point = new OpenLayers.Geometry.Point(new_lonlat.lon, new_lonlat.lat);
-        console.log(geom_point);
+        //console.log(geom_point);
         points.push(new_lonlat);
     }
     var ring = new OpenLayers.Geometry.LinearRing(points);
@@ -599,6 +606,7 @@ function changeMapOSM(lonOSM, latOSM, zoomOSM){
   locationPointLayer.addFeatures([featureP]);
 
   // change VIIRS
+
   mapVIIRS.getView().setZoom(1);
   mapVIIRS.getView().setCenter([0,0]);
   mapVIIRS.removeLayer(nadirLayer);
@@ -610,6 +618,14 @@ function changeMapOSM(lonOSM, latOSM, zoomOSM){
   nadirLayer = new ol.layer.Vector({ source: new ol.source.Vector({ features: icons }) });
 
   mapVIIRS.addLayer(nadirLayer);
+
+}
+
+
+function updateMapVIIRS(lonOSM, latOSM, zoomOSM){
+
+  mapVIIRS.getView().setZoom(zoomOSM);
+  mapVIIRS.getView().setCenter([eval(lonOSM),eval(latOSM)]);
 
 }
 
