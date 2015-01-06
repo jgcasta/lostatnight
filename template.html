@@ -232,17 +232,20 @@ pybossa.presentTask(function(task, deferred) {
         if (firstTime){
           loadOSM(task.info.citylon,task.info.citylat,7);
           loadISSImage(task.info.link_big.replace('sseop/images','DatabaseImages'));
+          drawCircle(task.info.citylon,task.info.citylat);
           firstTime = false;
-        }
-        else {
+        }else {
           removeAllOptions();
           //center OSM map if aprox location is known
           if (task.info.citylon != ''){
             changeMapOSM(task.info.citylon,task.info.citylat,7);
+            drawCircle(task.info.citylon,task.info.citylat);
           }else{
             changeMapOSM(0,0,1);
           }
           loadNewISSImage(task.info.link_big.replace('sseop/images','DatabaseImages'));
+
+          
         }
         document.getElementById("iss_latlon").innerHTML = "ISS Lat,Lon=" + eval(task.info.citylat).toFixed(5) + "," + eval(task.info.citylon).toFixed(5);
         
@@ -560,18 +563,27 @@ function loadOSM(lonOSM, latOSM, zoomOSM){
     mapVIIRS.addLayer(nadirLayer);
     updateMapVIIRS(eval(lonOSM),eval(latOSM),2);
 
+} // loadOSM
+
+var circleVIIRS;
+function drawCircle(lonOSM,latOSM){
+    
     // create 500 km circle on maprVIIRS
+
+    if (typeof circleVIIRS != 'undefined'){
+       mapVIIRS.removeLayer(circleVIIRS);   
+       circle= null;
+    }
+
     var wgs84Sphere = new ol.Sphere(6378137);
 
     var radius = 500000;
     var circle = ol.geom.Polygon.circular(wgs84Sphere, [eval(lonOSM),eval(latOSM)], radius, 64);
     var vectorSource = new ol.source.Vector();
     vectorSource.addFeature(new ol.Feature(circle)); 
-    var circleVIIRS =new ol.layer.Vector({source: vectorSource })    
-    mapVIIRS.addLayer(circleVIIRS);   
-
-} // loadOSM
-
+    circleVIIRS =new ol.layer.Vector({source: vectorSource })    
+    mapVIIRS.addLayer(circleVIIRS);
+}
 
 OpenLayers.Geometry.Polygon.createGeodesicPolygon = function(origin, radius, sides, rotation, projection){
 
