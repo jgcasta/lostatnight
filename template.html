@@ -493,7 +493,7 @@ function loadOSM(lonOSM, latOSM, zoomOSM){
          projection: "EPSG:4326"
     });
 
-// create point in OSM map with task coordinates
+    // create point in OSM map with task coordinates
     var locationPointLayer = new OpenLayers.Layer.Vector('Location', {
             styleMap: new OpenLayers.StyleMap({
                 pointRadius: "5", 
@@ -535,7 +535,6 @@ function loadOSM(lonOSM, latOSM, zoomOSM){
     var circleFeature = new OpenLayers.Feature.Vector(circle);
     circleLayer.addFeatures([circleFeature]);
 
-
     //load VIIRS help map
     mapVIIRS = new ol.Map({
       target: 'mapVIIRS',
@@ -560,6 +559,16 @@ function loadOSM(lonOSM, latOSM, zoomOSM){
   
     mapVIIRS.addLayer(nadirLayer);
     updateMapVIIRS(eval(lonOSM),eval(latOSM),2);
+
+    // create 500 km circle on maprVIIRS
+    var wgs84Sphere = new ol.Sphere(6378137);
+
+    var radius = 500000;
+    var circle = ol.geom.Polygon.circular(wgs84Sphere, [eval(lonOSM),eval(latOSM)], radius, 64);
+    var vectorSource = new ol.source.Vector();
+    vectorSource.addFeature(new ol.Feature(circle)); 
+    var circleVIIRS =new ol.layer.Vector({source: vectorSource })    
+    mapVIIRS.addLayer(circleVIIRS);   
 
 } // loadOSM
 
