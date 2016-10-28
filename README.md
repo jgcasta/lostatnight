@@ -15,7 +15,7 @@ When you finish, click on Save, and another image will be loaded. If you don't k
 
 If you need more information about this picture, you can click on "ISS picture data", and NASA data will be displayed. At last, you also can share it through Twitter
 
-We apreciate your job very much
+We apreciate your job very much 
 
 Video tutorial
 ==============
