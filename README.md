@@ -11,7 +11,7 @@ The process is very easy. The ISS image will be loaded in the left pannel and a 
 
 When you identify one picture, just click on the map to identify its possition. The longitud and latitud pair of coordinates will appear on the list. If you make a mistake, you can delete one point. Jus select it and click on "Delete".
 
-When you finish, click on Save, and another image will be loaded. If you don't know about the picture, just click on "Don't know".
+When you finish, click on Save, and another image will be loaded. If you don't know about the picture, just click on "Don't know"
 
 If you need more information about this picture, you can click on "ISS picture data", and NASA data will be displayed. At last, you also can share it through Twitter
 
